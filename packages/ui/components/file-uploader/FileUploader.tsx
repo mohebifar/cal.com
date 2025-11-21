@@ -1,4 +1,6 @@
 "use client";
+import { useTranslations } from "next-intl";
+
 
 import { useCallback, useState } from "react";
 import { z } from "zod";
@@ -82,6 +84,8 @@ export default function FileUploader({
   showFilesList = true,
   testId,
 }: FileUploaderProps) {
+const t = useTranslations("file-uploader");
+
   const { t, isLocaleReady } = useLocale();
   const [files, setFiles] = useState<FileData[]>([]);
 
@@ -222,8 +226,7 @@ export default function FileUploader({
             />
             {files.length > 0 && (
               <span className="text-sm">
-                {files.length}/{maxFiles} files
-              </span>
+                {t('status.files-count', { "filesLength": files.length, "maxFiles": maxFiles })}</span>
             )}
           </div>
         </div>

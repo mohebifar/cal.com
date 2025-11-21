@@ -1,0 +1,205 @@
+{
+  "meeting-time-timezones": {
+    "indicators": {
+      "day-offset_0": "+1",
+      "day-offset_1": "-1"
+    }
+  },
+  "date-picker": {
+    "placeholder": {
+      "select-date": "Pick a date"
+    }
+  },
+  "file-uploader": {
+    "status": {
+      "files-count": "{filesLength}/{maxFiles} files"
+    }
+  },
+  "root-layout": {
+    "styles": {
+      "font-variables": "\n          :root '{'\n            --font-inter: {interFontStyleFontFamilyReplaceG};\n            --font-cal: {calFontStyleFontFamilyReplaceG};\n          '}'"
+    }
+  },
+  "toast-playground": {
+    "buttons": {
+      "show-basic-toast": "Show Toast",
+      "custom-duration-toast": "Custom Duration",
+      "persistent-toast": "Persistent Toast",
+      "replay-toasts": "Replay Toasts"
+    }
+  },
+  "vertical-tabs-playground": {
+    "headings": {
+      "basic-example": "Basic"
+    }
+  },
+  "select-loading-playground": {
+    "placeholders": {
+      "loading-options": "Loading options..."
+    }
+  },
+  "select-basic-playground": {
+    "placeholders": {
+      "choose-flavor": "Choose a flavor...",
+      "small-select": "Small size select..."
+    }
+  },
+  "section-basic-playground": {
+    "content": {
+      "main-description": "This is the main content of the section."
+    }
+  },
+  "navigation-items-playground": {
+    "sections": {
+      "basic-items": "Basic Items",
+      "with-badge": "With Badge",
+      "active-state": "Active State"
+    },
+    "badges": {
+      "new": "New"
+    }
+  },
+  "input-widths-playground": {
+    "size-label": "Size: {size}",
+    "full-width-heading": "Full Width",
+    "full-width-placeholder": "Full width input",
+    "auto-width-heading": "Auto Width",
+    "auto-width-placeholder": "Auto width input"
+  },
+  "form-special-fields": {
+    "labels": {
+      "age": "Age",
+      "phone": "Phone"
+    },
+    "buttons": {
+      "reset": "Reset",
+      "submit": "Submit"
+    }
+  },
+  "empty-screen-html-content": {
+    "buttons": {
+      "learn-more": "Learn More"
+    },
+    "headings": {
+      "custom-with-html": "Custom Headline with <component0>HTML</component0>"
+    },
+    "descriptions": {
+      "first-paragraph": "This is a custom description with multiple paragraphs.",
+      "second-paragraph": "You can include <component0>any HTML content</component0> here."
+    }
+  },
+  "dropdown-complex-playground": {
+    "buttons": {
+      "open": "Open"
+    },
+    "sections": {
+      "my-account": "My account",
+      "team": "Team"
+    },
+    "menu-items": {
+      "profile": "Profile",
+      "billing": "Billing",
+      "settings": "Settings",
+      "keyboard-shortcuts": "Keyboard Shortcuts",
+      "invite-users": "Invite users",
+      "new-team": "New team",
+      "github": "Github",
+      "support": "Support",
+      "api": "API",
+      "my-account": "My account",
+      "plan": "Plan",
+      "billing-with-icon": "Billing",
+      "integrations": "Integrations",
+      "module": "Module"
+    },
+    "labels": {
+      "complex-menu": "Complex Menu",
+      "user-email": "peer@cal.com",
+      "with-icons": "With Icons",
+      "simple-actions": "Simple Actions"
+    },
+    "alt-text": {
+      "avatar": "Avatar"
+    },
+    "actions": {
+      "log-out": "Log out",
+      "rename": "Rename",
+      "duplicate": "Duplicate",
+      "move": "Move",
+      "delete": "Delete"
+    }
+  },
+  "dialog-form-playground": {
+    "buttons": {
+      "open-form-dialog": "Open Form Dialog",
+      "submit-feedback": "Submit Feedback"
+    },
+    "labels": {
+      "feedback-with-optional": "Your Feedback <component0>(Optional)</component0>"
+    },
+    "headings": {
+      "current-form-input": "Current Form Input:"
+    }
+  },
+  "checkbox-info-icon-playground": {
+    "checkbox": {
+      "description": "Checkbox with additional information",
+      "label": "Information Icon"
+    },
+    "tooltip": {
+      "additional-info": "This is additional information that appears in a tooltip"
+    }
+  },
+  "button-onclick-playground": {
+    "buttons": {
+      "trigger-alert": "Trigger Alert"
+    }
+  },
+  "badge-interactive-playground": {
+    "badge": {
+      "click-action-text": "Click me",
+      "clickable-label": "Clickable"
+    }
+  },
+  "avatar-sizes-playground": {
+    "alt-text": {
+      "circular-avatar": "{size} avatar",
+      "square-avatar": "{size} avatar"
+    }
+  },
+  "avatar-image-playground": {
+    "alt-text": {
+      "with-image": "With image",
+      "without-image": "Without image"
+    },
+    "labels": {
+      "with-image": "With Image",
+      "without-image": "Without Image"
+    }
+  },
+  "alert-actions-playground": {
+    "title": {
+      "severity-alert-with-actions": "{severityCharAt0ToUpperCaseSeveritySlice1} Alert with Actions"
+    },
+    "actions": {
+      "dismiss": "Dismiss",
+      "view": "View"
+    }
+  },
+  "icon-grid-playground": {
+    "buttons": {
+      "copy-component": "Copy Component"
+    },
+    "inputs": {
+      "search-icons-placeholder": "Search icons..."
+    }
+  },
+  "home-page": {
+    "hero": {
+      "heading": {
+        "line-one": "Open UI for absolutely",
+        "line-two": "everyone"
+      }
+    }
+  }
+}
