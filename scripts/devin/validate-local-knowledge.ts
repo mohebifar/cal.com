@@ -119,7 +119,7 @@ function main() {
 
   const allErrors: ValidationError[] = [];
 
-  console.log("Validating agents/ directory format...\n");
+  logger.log("Validating agents/ directory format...\n");
 
   // Validate rules files
   if (fs.existsSync(rulesDir)) {
@@ -127,7 +127,7 @@ function main() {
       .readdirSync(rulesDir)
       .filter((f) => f.endsWith(".md") && f !== "README.md" && f !== "_template.md" && f !== "_sections.md");
 
-    console.log(`Checking ${ruleFiles.length} rule files...`);
+    logger.log(`Checking ${ruleFiles.length} rule files...`);
 
     for (const ruleFile of ruleFiles) {
       const filePath = path.join(rulesDir, ruleFile);
@@ -138,26 +138,26 @@ function main() {
 
   // Validate knowledge-base.md
   if (fs.existsSync(knowledgeBasePath)) {
-    console.log("Checking knowledge-base.md...");
+    logger.log("Checking knowledge-base.md...");
     const errors = validateKnowledgeBase(knowledgeBasePath);
     allErrors.push(...errors);
   }
 
   // Report results
-  console.log("");
+  logger.log("");
 
   if (allErrors.length === 0) {
-    console.log("All files are valid!");
+    logger.log("All files are valid!");
     process.exit(0);
   } else {
-    console.log(`Found ${allErrors.length} validation error(s):\n`);
+    logger.log(`Found ${allErrors.length} validation error(s):\n`);
 
     for (const error of allErrors) {
-      console.log(`[ERROR] ${error.file}`);
-      console.log(`  ${error.message}\n`);
+      logger.log(`[ERROR] ${error.file}`);
+      logger.log(`  ${error.message}\n`);
     }
 
-    console.log("Please fix the above errors before merging.");
+    logger.log("Please fix the above errors before merging.");
     process.exit(1);
   }
 }

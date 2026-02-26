@@ -203,7 +203,7 @@ describe("Booking ownership and access in Middleware", () => {
   });
 
   test("should not throw error for bookings where user is an attendee", async () => {
-    console.log(createEventResult1.bookings[0].id);
+    logger.log(createEventResult1.bookings[0].id);
     const { req } = createMocks<CustomNextApiRequest, CustomNextApiResponse>({
       method: "GET",
       query: {

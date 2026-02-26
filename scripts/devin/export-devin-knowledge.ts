@@ -46,7 +46,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log("Exporting Devin Knowledge...");
+  logger.log("Exporting Devin Knowledge...");
 
   const response = await fetch(`${API_BASE}/knowledge`, {
     method: "GET",
@@ -71,9 +71,9 @@ async function main() {
 
   fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
 
-  console.log(`Success! Backup saved to: ${backupFile}`);
-  console.log(`  - Folders: ${data.folders.length}`);
-  console.log(`  - Knowledge entries: ${data.knowledge.length}`);
+  logger.log(`Success! Backup saved to: ${backupFile}`);
+  logger.log(`  - Folders: ${data.folders.length}`);
+  logger.log(`  - Knowledge entries: ${data.knowledge.length}`);
 }
 
 main().catch((error) => {

@@ -127,12 +127,10 @@ async function main() {
 
   const localData: DevinKnowledgeOutput = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
 
-  console.log("Fetching existing knowledge from Devin API...");
+  logger.log("Fetching existing knowledge from Devin API...");
   const remoteData = await listKnowledge();
 
-  console.log(
-    `Found ${remoteData.folders.length} folders and ${remoteData.knowledge.length} entries in Devin\n`
-  );
+  logger.log(`Found ${remoteData.folders.length} folders and ${remoteData.knowledge.length} entries in Devin\n`);
 
   // Build knowledge name -> entry map for remote
   const remoteKnowledgeMap = new Map<string, ApiKnowledgeEntry>();
@@ -144,7 +142,7 @@ async function main() {
   const seenRemoteIds = new Set<string>();
 
   // Sync knowledge entries
-  console.log("\nSyncing knowledge entries...");
+  logger.log("\nSyncing knowledge entries...");
   let created = 0;
   let updated = 0;
   let unchanged = 0;
@@ -159,14 +157,14 @@ async function main() {
       const triggerChanged = existing.trigger_description !== entry.trigger_description;
 
       if (bodyChanged || triggerChanged) {
-        console.log(`  Updating: ${entry.name}`);
+        logger.log(`  Updating: ${entry.name}`);
         await updateKnowledge(existing.id, entry.name, entry.body, entry.trigger_description);
         updated++;
       } else {
         unchanged++;
       }
     } else {
-      console.log(`  Creating: ${entry.name}`);
+      logger.log(`  Creating: ${entry.name}`);
       await createKnowledge(entry.name, entry.body, entry.trigger_description);
       created++;
     }
@@ -175,10 +173,10 @@ async function main() {
   // Delete removed entries if flag is set
   let deleted = 0;
   if (deleteRemoved) {
-    console.log("\nChecking for entries to delete...");
+    logger.log("\nChecking for entries to delete...");
     for (const entry of remoteData.knowledge) {
       if (!seenRemoteIds.has(entry.id)) {
-        console.log(`  Deleting: ${entry.name}`);
+        logger.log(`  Deleting: ${entry.name}`);
         await deleteKnowledge(entry.id);
         deleted++;
       }
@@ -186,14 +184,14 @@ async function main() {
   }
 
   // Summary
-  console.log("\n--- Sync Summary ---");
-  console.log(`  Created: ${created}`);
-  console.log(`  Updated: ${updated}`);
-  console.log(`  Unchanged: ${unchanged}`);
+  logger.log("\n--- Sync Summary ---");
+  logger.log(`  Created: ${created}`);
+  logger.log(`  Updated: ${updated}`);
+  logger.log(`  Unchanged: ${unchanged}`);
   if (deleteRemoved) {
-    console.log(`  Deleted: ${deleted}`);
+    logger.log(`  Deleted: ${deleted}`);
   }
-  console.log("Sync complete!");
+  logger.log("Sync complete!");
 }
 
 main().catch((error) => {

@@ -64,7 +64,7 @@ async function createApp(
       await prisma.app.create({
         data,
       });
-      console.log(`📲 Created ${isTemplate ? "template" : "app"}: '${slug}'`);
+      logger.log(`📲 Created ${isTemplate ? "template" : "app"}: '${slug}'`);
     } else {
       // We know that the app exists, so either it would have the same slug or dirName
       // Because update query can't have both slug and dirName, try to find the app to update by slug and dirName one by one
@@ -77,7 +77,7 @@ async function createApp(
         where: { dirName: foundApp.dirName },
         data,
       });
-      console.log(`📲 Updated ${isTemplate ? "template" : "app"}: '${slug}'`);
+      logger.log(`📲 Updated ${isTemplate ? "template" : "app"}: '${slug}'`);
     }
 
     await prisma.credential.updateMany({

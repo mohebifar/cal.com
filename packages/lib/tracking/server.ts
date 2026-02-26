@@ -69,7 +69,7 @@ export function getTrackingFromCookies(
     try {
       utmData = parseUtm(JSON.parse(cookies.utm_data));
     } catch {
-      console.debug("Failed to parse utm_data cookie");
+      logger.log("Failed to parse utm_data cookie");
     }
   }
 

@@ -184,8 +184,8 @@ function main() {
   const outputPath = path.join(agentsDir, "devin-knowledge.json");
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
 
-  console.log(`Generated ${output.knowledge.length} knowledge entries in ${output.folders.length} folders`);
-  console.log(`Output written to: ${outputPath}`);
+  logger.log(`Generated ${output.knowledge.length} knowledge entries in ${output.folders.length} folders`);
+  logger.log(`Output written to: ${outputPath}`);
 
   // Print summary
   const folderCounts: Record<string, number> = {};
@@ -194,9 +194,9 @@ function main() {
     folderCounts[folder] = (folderCounts[folder] || 0) + 1;
   }
 
-  console.log("\nSummary by folder:");
+  logger.log("\nSummary by folder:");
   for (const [folder, count] of Object.entries(folderCounts)) {
-    console.log(`  ${folder}: ${count} entries`);
+    logger.log(`  ${folder}: ${count} entries`);
   }
 }
 

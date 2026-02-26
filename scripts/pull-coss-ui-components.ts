@@ -170,7 +170,7 @@ async function processComponent(registryDependency: string, targetDirs: TargetDi
 
   const componentUrl = `${REGISTRY_BASE_URL}/${componentName}.json`;
 
-  console.log(`Pulling ${componentName}...`);
+  logger.log(`Pulling ${componentName}...`);
 
   try {
     const componentJson = await fetchJSON<ComponentJson>(componentUrl);
@@ -206,7 +206,7 @@ async function processComponent(registryDependency: string, targetDirs: TargetDi
 
     await fs.writeFile(filePath, content, 'utf8');
 
-    console.log(`✅ Pulled ${fileName}`);
+    logger.log(`✅ Pulled ${fileName}`);
     return true;
   } catch (error) {
     console.error(`❌ Error pulling ${componentName}:`, (error as Error).message);
@@ -215,14 +215,14 @@ async function processComponent(registryDependency: string, targetDirs: TargetDi
 }
 
 async function main(): Promise<void> {
-  console.log('🚀 Pulling coss ui components...\n');
+  logger.log('🚀 Pulling coss ui components...\n');
 
   try {
     const { targetDirs, targetRoot } = await resolvePaths();
-    console.log(`Target root: ${targetRoot}`);
-    console.log(`Components dir: ${targetDirs.components}\n`);
+    logger.log(`Target root: ${targetRoot}`);
+    logger.log(`Components dir: ${targetDirs.components}\n`);
 
-    console.log(`Pulling index: ${UI_JSON_URL}...`);
+    logger.log(`Pulling index: ${UI_JSON_URL}...`);
     const uiJson = await fetchJSON<ComponentJson>(UI_JSON_URL);
 
     // Validate index structure
@@ -235,7 +235,7 @@ async function main(): Promise<void> {
     }
 
     const registryDependencies = uiJson.registryDependencies || [];
-    console.log(`Found ${registryDependencies.length} components\n`);
+    logger.log(`Found ${registryDependencies.length} components\n`);
 
     const results = await Promise.all(
       registryDependencies.map((dep) => processComponent(dep, targetDirs))
@@ -244,10 +244,10 @@ async function main(): Promise<void> {
     const successCount = results.filter((r) => r === true).length;
     const failCount = results.filter((r) => r === false).length;
 
-    console.log(`\n✨ Done!`);
-    console.log(`✅ Successfully pulled: ${successCount} components`);
+    logger.log(`\n✨ Done!`);
+    logger.log(`✅ Successfully pulled: ${successCount} components`);
     if (failCount > 0) {
-      console.log(`❌ Failed: ${failCount} components`);
+      logger.log(`❌ Failed: ${failCount} components`);
     }
   } catch (error) {
     console.error('❌ Fatal error:', (error as Error).message);

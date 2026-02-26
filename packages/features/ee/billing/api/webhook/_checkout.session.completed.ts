@@ -216,7 +216,7 @@ async function handleCalAIPhoneNumberSubscription(
       },
     });
 
-    console.log("Phone number successfully linked to agent");
+    logger.log("Phone number successfully linked to agent");
   } catch (error) {
     console.error("Agent linking error details:", {
       error,

@@ -81,7 +81,7 @@ async function seedAuditLogsForBooking({
   });
 
   if (existingLogs) {
-    console.log(`  ⏭️ Audit logs already exist for ${bookingUid}, skipping.`);
+    logger.log(`  ⏭️ Audit logs already exist for ${bookingUid}, skipping.`);
     return 0;
   }
 
@@ -413,7 +413,7 @@ async function seedAuditLogsForBooking({
 }
 
 export default async function seedBookingAuditLogs() {
-  console.log("🔍 Seeding booking audit logs...");
+  logger.log("🔍 Seeding booking audit logs...");
 
   // Audit logs is an org-only feature, so we only seed for owner1-acme
   const user = await prisma.user.findFirst({
@@ -428,12 +428,12 @@ export default async function seedBookingAuditLogs() {
   });
 
   if (!user) {
-    console.log("❌ User owner1-acme not found. Run the main seed first.");
+    logger.log("❌ User owner1-acme not found. Run the main seed first.");
     return;
   }
 
   if (!user.profiles.length) {
-    console.log("❌ User owner1-acme has no organization profile. Run the main seed first.");
+    logger.log("❌ User owner1-acme has no organization profile. Run the main seed first.");
     return;
   }
 
@@ -450,7 +450,7 @@ export default async function seedBookingAuditLogs() {
     },
     update: { enabled: true },
   });
-  console.log("  ✅ Enabled bookings-v3 globally");
+  logger.log("  ✅ Enabled bookings-v3 globally");
 
   if (organizationId) {
     await prisma.teamFeatures.upsert({
@@ -464,7 +464,7 @@ export default async function seedBookingAuditLogs() {
       update: { enabled: true },
     });
 
-    console.log(`  ✅ Enabled booking-audit for organization ${organizationId}`);
+    logger.log(`  ✅ Enabled booking-audit for organization ${organizationId}`);
 
     await prisma.teamFeatures.upsert({
       where: { teamId_featureId: { teamId: organizationId, featureId: "bookings-v3" } },
@@ -476,7 +476,7 @@ export default async function seedBookingAuditLogs() {
       },
       update: { enabled: true },
     });
-    console.log(`  ✅ Enabled bookings-v3 for organization ${organizationId}`);
+    logger.log(`  ✅ Enabled bookings-v3 for organization ${organizationId}`);
   }
 
   // Find an event type for this user to create a booking
@@ -486,7 +486,7 @@ export default async function seedBookingAuditLogs() {
   });
 
   if (!eventType) {
-    console.log("❌ No event type found for owner1-acme. Run the main seed first.");
+    logger.log("❌ No event type found for owner1-acme. Run the main seed first.");
     return;
   }
 
@@ -495,7 +495,7 @@ export default async function seedBookingAuditLogs() {
   const startTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
   const endTime = new Date(startTime.getTime() + eventType.length * 60 * 1000);
 
-  console.log(`📋 Creating new booking for audit logs...`);
+  logger.log(`📋 Creating new booking for audit logs...`);
 
   const booking = await prisma.booking.create({
     data: {
@@ -520,9 +520,9 @@ export default async function seedBookingAuditLogs() {
     },
   });
 
-  console.log(`  ✅ Created booking: ${booking.uid}`);
+  logger.log(`  ✅ Created booking: ${booking.uid}`);
 
-  console.log(`📋 Seeding audit logs for ${user.username} — booking ${booking.uid}`);
+  logger.log(`📋 Seeding audit logs for ${user.username} — booking ${booking.uid}`);
 
   const count = await seedAuditLogsForBooking({
     bookingUid: booking.uid,
@@ -534,22 +534,22 @@ export default async function seedBookingAuditLogs() {
     eventTypeLength: eventType.length,
   });
 
-  console.log(`  ✅ Created ${count} audit log entries`);
-  console.log(`  View logs at: /bookings/upcoming?uid=${booking.uid}&activeSegment=history`);
+  logger.log(`  ✅ Created ${count} audit log entries`);
+  logger.log(`  View logs at: /bookings/upcoming?uid=${booking.uid}&activeSegment=history`);
 
-  console.log(`\n📊 Summary:`);
-  console.log(`  Booking UID: ${booking.uid}`);
-  console.log(`  Total audit log entries created: ${count}`);
-  console.log("  Actions covered: CREATED, ACCEPTED, LOCATION_CHANGED, ATTENDEE_ADDED,");
-  console.log("    ATTENDEE_REMOVED, REASSIGNMENT (x2), NO_SHOW_UPDATED (x2), REJECTED,");
-  console.log("    SEAT_BOOKED, SEAT_RESCHEDULED, CANCELLED, RESCHEDULE_REQUESTED, RESCHEDULED");
-  console.log("  Actor types: USER, ATTENDEE, GUEST, SYSTEM, APP");
-  console.log("  Sources: WEBAPP, API_V1, API_V2, WEBHOOK, MAGIC_LINK, SYSTEM");
+  logger.log(`\n📊 Summary:`);
+  logger.log(`  Booking UID: ${booking.uid}`);
+  logger.log(`  Total audit log entries created: ${count}`);
+  logger.log("  Actions covered: CREATED, ACCEPTED, LOCATION_CHANGED, ATTENDEE_ADDED,");
+  logger.log("    ATTENDEE_REMOVED, REASSIGNMENT (x2), NO_SHOW_UPDATED (x2), REJECTED,");
+  logger.log("    SEAT_BOOKED, SEAT_RESCHEDULED, CANCELLED, RESCHEDULE_REQUESTED, RESCHEDULED");
+  logger.log("  Actor types: USER, ATTENDEE, GUEST, SYSTEM, APP");
+  logger.log("  Sources: WEBAPP, API_V1, API_V2, WEBHOOK, MAGIC_LINK, SYSTEM");
 }
 
 seedBookingAuditLogs()
   .then(() => {
-    console.log("\n🎉 Booking audit seed complete!");
+    logger.log("\n🎉 Booking audit seed complete!");
     process.exit(0);
   })
   .catch((err) => {

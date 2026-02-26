@@ -60,7 +60,7 @@ describe("GET /api/slots", () => {
         });
         buildMockData();
         await handler(req, res);
-        console.log({ statusCode: res._getStatusCode(), data: JSON.parse(res._getData()) });
+        logger.log({ statusCode: res._getStatusCode(), data: JSON.parse(res._getData()) });
         const response = JSON.parse(res._getData());
         expect(response.slots).toEqual(expect.objectContaining({}));
       });
@@ -78,7 +78,7 @@ describe("GET /api/slots", () => {
         });
         buildMockData();
         await handler(req, res);
-        console.log({ statusCode: res._getStatusCode(), data: JSON.parse(res._getData()) });
+        logger.log({ statusCode: res._getStatusCode(), data: JSON.parse(res._getData()) });
         const response = JSON.parse(res._getData());
         expect(response.slots).toEqual(expect.objectContaining({}));
       });

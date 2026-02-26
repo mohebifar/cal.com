@@ -88,12 +88,12 @@ interface SeedResult {
 
 function getStripeClient(): Stripe | null {
   if (SKIP_STRIPE) {
-    console.log("Skipping Stripe API calls (--skip-stripe flag)");
+    logger.log("Skipping Stripe API calls (--skip-stripe flag)");
     return null;
   }
 
   if (!process.env.STRIPE_PRIVATE_KEY) {
-    console.log("STRIPE_PRIVATE_KEY not set, skipping Stripe API calls");
+    logger.log("STRIPE_PRIVATE_KEY not set, skipping Stripe API calls");
     return null;
   }
 
@@ -145,7 +145,7 @@ async function createTestUser(email: string, name: string, username: string, org
 }
 
 async function cleanupStripeResources(stripe: Stripe) {
-  console.log("Cleaning up existing Stripe test resources...");
+  logger.log("Cleaning up existing Stripe test resources...");
 
   // Find and delete test customers for both orgs
   const emailsToCleanup = ["proration-admin@example.com", TRIGGER_ADMIN_EMAIL];
@@ -165,12 +165,12 @@ async function cleanupStripeResources(stripe: Stripe) {
         for (const sub of subscriptions.data) {
           if (sub.status !== "canceled") {
             await stripe.subscriptions.cancel(sub.id);
-            console.log(`  Cancelled subscription: ${sub.id}`);
+            logger.log(`  Cancelled subscription: ${sub.id}`);
           }
         }
         // Delete customer
         await stripe.customers.del(customer.id);
-        console.log(`  Deleted customer: ${customer.id}`);
+        logger.log(`  Deleted customer: ${customer.id}`);
       } catch (error) {
         console.log(`  Could not delete customer ${customer.id}:`, error);
       }
@@ -188,13 +188,13 @@ async function cleanupStripeResources(stripe: Stripe) {
       product.active
     ) {
       await stripe.products.update(product.id, { active: false });
-      console.log(`  Archived product: ${product.id}`);
+      logger.log(`  Archived product: ${product.id}`);
     }
   }
 }
 
 async function createStripeResources(stripe: Stripe, orgId: number): Promise<StripeResources> {
-  console.log("Creating Stripe resources...");
+  logger.log("Creating Stripe resources...");
 
   // Create a test product
   const product = await stripe.products.create({
@@ -205,7 +205,7 @@ async function createStripeResources(stripe: Stripe, orgId: number): Promise<Str
       orgId: orgId.toString(),
     },
   });
-  console.log(`  Created product: ${product.id}`);
+  logger.log(`  Created product: ${product.id}`);
 
   // Create a price for the product ($15/seat/month)
   const price = await stripe.prices.create({
@@ -220,7 +220,7 @@ async function createStripeResources(stripe: Stripe, orgId: number): Promise<Str
       testData: "true",
     },
   });
-  console.log(`  Created price: ${price.id}`);
+  logger.log(`  Created price: ${price.id}`);
 
   // Create a customer
   const customer = await stripe.customers.create({
@@ -232,7 +232,7 @@ async function createStripeResources(stripe: Stripe, orgId: number): Promise<Str
       calOrgId: orgId.toString(),
     },
   });
-  console.log(`  Created customer: ${customer.id}`);
+  logger.log(`  Created customer: ${customer.id}`);
 
   // Add a test payment method (test card)
   const paymentMethod = await stripe.paymentMethods.create({
@@ -251,7 +251,7 @@ async function createStripeResources(stripe: Stripe, orgId: number): Promise<Str
       default_payment_method: paymentMethod.id,
     },
   });
-  console.log(`  Attached payment method: ${paymentMethod.id}`);
+  logger.log(`  Attached payment method: ${paymentMethod.id}`);
 
   // Create a subscription with 5 seats
   const subscription = await stripe.subscriptions.create({
@@ -267,7 +267,7 @@ async function createStripeResources(stripe: Stripe, orgId: number): Promise<Str
       orgId: orgId.toString(),
     },
   });
-  console.log(`  Created subscription: ${subscription.id}`);
+  logger.log(`  Created subscription: ${subscription.id}`);
 
   return { customer, subscription, product, price };
 }
@@ -278,7 +278,7 @@ async function createFailedInvoice(
   amount: number,
   description: string
 ): Promise<Stripe.Invoice> {
-  console.log(`Creating invoice for $${(amount / 100).toFixed(2)}...`);
+  logger.log(`Creating invoice for $${(amount / 100).toFixed(2)}...`);
 
   // Create an invoice item
   await stripe.invoiceItems.create({
@@ -299,13 +299,13 @@ async function createFailedInvoice(
   });
 
   const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id);
-  console.log(`  Created invoice: ${finalizedInvoice.id} (status: ${finalizedInvoice.status})`);
+  logger.log(`  Created invoice: ${finalizedInvoice.id} (status: ${finalizedInvoice.status})`);
 
   return finalizedInvoice;
 }
 
 async function createStripeResourcesForTriggerOrg(stripe: Stripe, orgId: number): Promise<StripeResources> {
-  console.log("Creating Stripe resources for trigger org (annual)...");
+  logger.log("Creating Stripe resources for trigger org (annual)...");
 
   const product = await stripe.products.create({
     name: `Trigger Test Product - ${Date.now()}`,
@@ -315,7 +315,7 @@ async function createStripeResourcesForTriggerOrg(stripe: Stripe, orgId: number)
       orgId: orgId.toString(),
     },
   });
-  console.log(`  Created product: ${product.id}`);
+  logger.log(`  Created product: ${product.id}`);
 
   // Annual pricing at $150/seat/year ($12.50/month equivalent)
   const price = await stripe.prices.create({
@@ -328,7 +328,7 @@ async function createStripeResourcesForTriggerOrg(stripe: Stripe, orgId: number)
     },
     metadata: { testData: "true" },
   });
-  console.log(`  Created price: ${price.id}`);
+  logger.log(`  Created price: ${price.id}`);
 
   const customer = await stripe.customers.create({
     email: TRIGGER_ADMIN_EMAIL,
@@ -339,7 +339,7 @@ async function createStripeResourcesForTriggerOrg(stripe: Stripe, orgId: number)
       calOrgId: orgId.toString(),
     },
   });
-  console.log(`  Created customer: ${customer.id}`);
+  logger.log(`  Created customer: ${customer.id}`);
 
   const paymentMethod = await stripe.paymentMethods.create({
     type: "card",
@@ -350,7 +350,7 @@ async function createStripeResourcesForTriggerOrg(stripe: Stripe, orgId: number)
   await stripe.customers.update(customer.id, {
     invoice_settings: { default_payment_method: paymentMethod.id },
   });
-  console.log(`  Attached payment method: ${paymentMethod.id}`);
+  logger.log(`  Attached payment method: ${paymentMethod.id}`);
 
   // Create annual subscription with 3 seats
   const subscription = await stripe.subscriptions.create({
@@ -361,13 +361,13 @@ async function createStripeResourcesForTriggerOrg(stripe: Stripe, orgId: number)
       orgId: orgId.toString(),
     },
   });
-  console.log(`  Created subscription: ${subscription.id}`);
+  logger.log(`  Created subscription: ${subscription.id}`);
 
   return { customer, subscription, product, price };
 }
 
 async function cleanupDatabaseResources() {
-  console.log("Cleaning up database test resources...");
+  logger.log("Cleaning up database test resources...");
 
   // Clean up trigger-test-org
   const triggerOrg = await prisma.team.findFirst({
@@ -403,7 +403,7 @@ async function cleanupDatabaseResources() {
       }
     }
 
-    console.log("  Trigger org cleanup complete");
+    logger.log("  Trigger org cleanup complete");
   }
 
   // Clean up proration-test-org
@@ -412,7 +412,7 @@ async function cleanupDatabaseResources() {
   });
 
   if (!org) {
-    console.log("  No test organization found");
+    logger.log("  No test organization found");
     return;
   }
 
@@ -458,12 +458,12 @@ async function cleanupDatabaseResources() {
     }
   }
 
-  console.log("  Database cleanup complete");
+  logger.log("  Database cleanup complete");
 }
 
 async function seedTriggerReadyOrg(stripe: Stripe | null): Promise<TriggerOrgResult> {
   const monthKey = computeTriggerMonthKey();
-  console.log(`\nCreating trigger-ready organization (monthKey: ${monthKey})...`);
+  logger.log(`\nCreating trigger-ready organization (monthKey: ${monthKey})...`);
 
   // Create organization
   let org = await prisma.team.findFirst({
@@ -479,7 +479,7 @@ async function seedTriggerReadyOrg(stripe: Stripe | null): Promise<TriggerOrgRes
       },
     });
   }
-  console.log(`  Organization created: ${org.name} (ID: ${org.id})`);
+  logger.log(`  Organization created: ${org.name} (ID: ${org.id})`);
 
   // Create OrganizationSettings
   await prisma.organizationSettings.upsert({
@@ -507,7 +507,7 @@ async function seedTriggerReadyOrg(stripe: Stripe | null): Promise<TriggerOrgRes
       },
     });
   }
-  console.log(`  Team created: ${team.name} (ID: ${team.id})`);
+  logger.log(`  Team created: ${team.name} (ID: ${team.id})`);
 
   // Create users: 1 admin + 4 members = 5 total org members
   const adminUser = await createTestUser(TRIGGER_ADMIN_EMAIL, "Trigger Admin", "trigger-admin", org.id);
@@ -551,7 +551,7 @@ async function seedTriggerReadyOrg(stripe: Stripe | null): Promise<TriggerOrgRes
     });
   }
 
-  console.log("  Users and memberships created (5 org members, 3 team members)");
+  logger.log("  Users and memberships created (5 org members, 3 team members)");
 
   // Stripe resources or fake IDs
   let stripeResources: StripeResources = { customer: null, subscription: null, product: null, price: null };
@@ -602,7 +602,7 @@ async function seedTriggerReadyOrg(stripe: Stripe | null): Promise<TriggerOrgRes
       subscriptionTrialEnd: null,
     },
   });
-  console.log("  OrganizationBilling created (ANNUALLY, $150/seat, 3 paid seats, no trial)");
+  logger.log("  OrganizationBilling created (ANNUALLY, $150/seat, 3 paid seats, no trial)");
 
   // Set team metadata so org upgrade banner check is satisfied
   await prisma.team.update({
@@ -649,8 +649,8 @@ async function seedTriggerReadyOrg(stripe: Stripe | null): Promise<TriggerOrgRes
     });
   }
 
-  console.log(`  Created 2 unprocessed SeatChangeLog entries (monthKey: ${monthKey})`);
-  console.log("  NO MonthlyProration records created (trigger-ready state)");
+  logger.log(`  Created 2 unprocessed SeatChangeLog entries (monthKey: ${monthKey})`);
+  logger.log("  NO MonthlyProration records created (trigger-ready state)");
 
   return {
     organization: { id: org.id, name: org.name, slug: org.slug! },
@@ -671,7 +671,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     }
   }
 
-  console.log("\nCreating test organization...");
+  logger.log("\nCreating test organization...");
 
   // Create organization - find existing or create new
   let org = await prisma.team.findFirst({
@@ -691,7 +691,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     });
   }
 
-  console.log(`Organization created: ${org.name} (ID: ${org.id})`);
+  logger.log(`Organization created: ${org.name} (ID: ${org.id})`);
 
   // Create OrganizationSettings for the org
   await prisma.organizationSettings.upsert({
@@ -705,7 +705,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     },
   });
 
-  console.log("Organization settings created");
+  logger.log("Organization settings created");
 
   // Create team under organization - find existing or create new
   let team = await prisma.team.findFirst({
@@ -725,10 +725,10 @@ async function seedProrationTest(): Promise<SeedResult> {
     });
   }
 
-  console.log(`Team created: ${team.name} (ID: ${team.id})`);
+  logger.log(`Team created: ${team.name} (ID: ${team.id})`);
 
   // Create test users (with organizationId set to link them to the org)
-  console.log("Creating test users...");
+  logger.log("Creating test users...");
 
   const adminUser = await createTestUser(
     "proration-admin@example.com",
@@ -820,7 +820,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     });
   }
 
-  console.log("Users added to organization and team (8 org members, 4 team members)");
+  logger.log("Users added to organization and team (8 org members, 4 team members)");
 
   // Create Stripe resources or use fake IDs
   let stripeResources: StripeResources = {
@@ -865,7 +865,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     },
   });
 
-  console.log("Organization billing created");
+  logger.log("Organization billing created");
 
   // Set subscriptionId in team metadata so the org upgrade banner check is satisfied.
   // checkIfOrgNeedsUpgrade.handler.ts looks at team.metadata.subscriptionId to determine
@@ -880,7 +880,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     },
   });
 
-  console.log("Organization team metadata updated with subscriptionId");
+  logger.log("Organization team metadata updated with subscriptionId");
 
   // Get the organization billing record for linking seat changes
   const orgBilling = await prisma.organizationBilling.findUnique({
@@ -888,7 +888,7 @@ async function seedProrationTest(): Promise<SeedResult> {
   });
 
   // Create test MonthlyProration records
-  console.log("Creating test proration and seat change records...");
+  logger.log("Creating test proration and seat change records...");
 
   const now = new Date();
   const eightDaysAgo = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000);
@@ -951,7 +951,7 @@ async function seedProrationTest(): Promise<SeedResult> {
   });
 
   // Create SeatChangeLog entries that correspond to the prorations
-  console.log("Creating seat change logs...");
+  logger.log("Creating seat change logs...");
 
   // Initial 5 seats (original team members) - these would have been added when org was created
   const initialAdditionDate = new Date(eightDaysAgo.getTime() - 30 * 24 * 60 * 60 * 1000); // 38 days ago
@@ -1010,7 +1010,7 @@ async function seedProrationTest(): Promise<SeedResult> {
     });
   }
 
-  console.log("Proration and seat change records created");
+  logger.log("Proration and seat change records created");
 
   // Seed the trigger-ready org (no MonthlyProration, unprocessed seat changes)
   const triggerOrgResult = await seedTriggerReadyOrg(stripe);
@@ -1032,102 +1032,94 @@ async function seedProrationTest(): Promise<SeedResult> {
 }
 
 async function main() {
-  console.log("=== Proration Test Seed Script ===\n");
-  console.log("Options:");
-  console.log(`  --skip-stripe: ${SKIP_STRIPE}`);
-  console.log(`  --cleanup: ${CLEANUP_FIRST}`);
-  console.log("");
+  logger.log("=== Proration Test Seed Script ===\n");
+  logger.log("Options:");
+  logger.log(`  --skip-stripe: ${SKIP_STRIPE}`);
+  logger.log(`  --cleanup: ${CLEANUP_FIRST}`);
+  logger.log("");
 
   try {
     const result = await seedProrationTest();
 
-    console.log("\n=== Seed Complete ===\n");
+    logger.log("\n=== Seed Complete ===\n");
     console.log("Organization:", result.organization);
     console.log("Team:", result.team);
 
-    console.log("\nTest Users:");
+    logger.log("\nTest Users:");
     result.users.forEach((u) => {
-      console.log(`  - ${u.name} (${u.email}) - Role: ${u.role}`);
+      logger.log(`  - ${u.name} (${u.email}) - Role: ${u.role}`);
     });
-    console.log(`  Password for all users: ${TEST_PASSWORD}`);
+    logger.log(`  Password for all users: ${TEST_PASSWORD}`);
 
-    console.log("\nProration Records:");
+    logger.log("\nProration Records:");
     result.prorations.forEach((p) => {
-      console.log(`  - ${p.id}: ${p.status} (blocking: ${p.isBlocking})`);
+      logger.log(`  - ${p.id}: ${p.status} (blocking: ${p.isBlocking})`);
     });
 
     if (result.stripe.customer) {
-      console.log("\nStripe Resources:");
-      console.log(`  Customer: ${result.stripe.customer.id}`);
-      console.log(`  Subscription: ${result.stripe.subscription?.id}`);
-      console.log(`  Product: ${result.stripe.product?.id}`);
-      console.log(`  Price: ${result.stripe.price?.id}`);
+      logger.log("\nStripe Resources:");
+      logger.log(`  Customer: ${result.stripe.customer.id}`);
+      logger.log(`  Subscription: ${result.stripe.subscription?.id}`);
+      logger.log(`  Product: ${result.stripe.product?.id}`);
+      logger.log(`  Price: ${result.stripe.price?.id}`);
     }
 
-    console.log("\n=== Testing Instructions ===\n");
-    console.log("1. Login as proration-admin@example.com");
-    console.log("   - Should see the due invoice banner (error variant - blocking)");
-    console.log("   - Should be blocked from inviting new members");
-    console.log("");
-    console.log("2. Login as proration-member@example.com");
-    console.log("   - Should NOT see the due invoice banner (not a billing admin)");
-    console.log("");
-    console.log("3. To test sub-team exception:");
-    console.log("   - Try inviting proration-member@example.com to the sub-team");
-    console.log("   - This should succeed (existing org member)");
-    console.log("   - Try inviting a new email - this should be blocked");
-    console.log("");
+    logger.log("\n=== Testing Instructions ===\n");
+    logger.log("1. Login as proration-admin@example.com");
+    logger.log("   - Should see the due invoice banner (error variant - blocking)");
+    logger.log("   - Should be blocked from inviting new members");
+    logger.log("");
+    logger.log("2. Login as proration-member@example.com");
+    logger.log("   - Should NOT see the due invoice banner (not a billing admin)");
+    logger.log("");
+    logger.log("3. To test sub-team exception:");
+    logger.log("   - Try inviting proration-member@example.com to the sub-team");
+    logger.log("   - This should succeed (existing org member)");
+    logger.log("   - Try inviting a new email - this should be blocked");
+    logger.log("");
 
     if (result.stripe.customer) {
-      console.log("=== Stripe Dashboard (Proration Org) ===\n");
-      console.log(`Customer: https://dashboard.stripe.com/test/customers/${result.stripe.customer.id}`);
-      console.log(
-        `Subscription: https://dashboard.stripe.com/test/subscriptions/${result.stripe.subscription?.id}`
-      );
-      console.log("");
+      logger.log("=== Stripe Dashboard (Proration Org) ===\n");
+      logger.log(`Customer: https://dashboard.stripe.com/test/customers/${result.stripe.customer.id}`);
+      logger.log(`Subscription: https://dashboard.stripe.com/test/subscriptions/${result.stripe.subscription?.id}`);
+      logger.log("");
     }
 
     // Trigger-ready org output
     if (result.triggerOrg) {
       const t = result.triggerOrg;
-      console.log("=== Trigger-Ready Organization ===\n");
+      logger.log("=== Trigger-Ready Organization ===\n");
       console.log("Organization:", t.organization);
       console.log("Team:", t.team);
-      console.log(`MonthKey: ${t.monthKey}`);
-      console.log(`Unprocessed SeatChangeLogs: ${t.unprocessedSeatChanges}`);
-      console.log("MonthlyProration records: 0 (intentionally absent)");
+      logger.log(`MonthKey: ${t.monthKey}`);
+      logger.log(`Unprocessed SeatChangeLogs: ${t.unprocessedSeatChanges}`);
+      logger.log("MonthlyProration records: 0 (intentionally absent)");
 
       if (t.stripe.customer) {
-        console.log(`\nStripe (Trigger Org):`);
-        console.log(`  Customer: https://dashboard.stripe.com/test/customers/${t.stripe.customer.id}`);
-        console.log(
-          `  Subscription: https://dashboard.stripe.com/test/subscriptions/${t.stripe.subscription?.id}`
-        );
+        logger.log(`\nStripe (Trigger Org):`);
+        logger.log(`  Customer: https://dashboard.stripe.com/test/customers/${t.stripe.customer.id}`);
+        logger.log(`  Subscription: https://dashboard.stripe.com/test/subscriptions/${t.stripe.subscription?.id}`);
       }
 
-      console.log("\n=== Trigger Testing Instructions ===\n");
-      console.log("When scheduleMonthlyProration runs, it will:");
-      console.log(`  1. Query for annual orgs with unprocessed seat changes for monthKey "${t.monthKey}"`);
-      console.log(`  2. Find trigger-test-org with ${t.unprocessedSeatChanges} additions, 0 removals`);
-      console.log("  3. Calculate prorated amount based on remaining annual subscription days");
-      console.log("  4. Create a MonthlyProration record");
-      console.log("  5. Mark SeatChangeLog entries as processed");
-      console.log("  6. Create a Stripe invoice (if amount > 0)");
-      console.log("");
-      console.log("To verify after trigger runs:");
-      console.log(`  SELECT * FROM "MonthlyProration" WHERE "teamId" = ${t.organization.id};`);
-      console.log(
-        `  SELECT * FROM "SeatChangeLog" WHERE "teamId" = ${t.organization.id} AND "processedInProrationId" IS NOT NULL;`
-      );
-      console.log("");
+      logger.log("\n=== Trigger Testing Instructions ===\n");
+      logger.log("When scheduleMonthlyProration runs, it will:");
+      logger.log(`  1. Query for annual orgs with unprocessed seat changes for monthKey "${t.monthKey}"`);
+      logger.log(`  2. Find trigger-test-org with ${t.unprocessedSeatChanges} additions, 0 removals`);
+      logger.log("  3. Calculate prorated amount based on remaining annual subscription days");
+      logger.log("  4. Create a MonthlyProration record");
+      logger.log("  5. Mark SeatChangeLog entries as processed");
+      logger.log("  6. Create a Stripe invoice (if amount > 0)");
+      logger.log("");
+      logger.log("To verify after trigger runs:");
+      logger.log(`  SELECT * FROM "MonthlyProration" WHERE "teamId" = ${t.organization.id};`);
+      logger.log(`  SELECT * FROM "SeatChangeLog" WHERE "teamId" = ${t.organization.id} AND "processedInProrationId" IS NOT NULL;`);
+      logger.log("");
     }
 
-    console.log("=== Cleanup ===\n");
-    console.log("To clean up all test data, run:");
-    console.log(
-      "  npx tsx packages/features/ee/billing/service/dueInvoice/seed-proration-test.ts --cleanup --skip-stripe"
-    );
-    console.log("");
+    logger.log("=== Cleanup ===\n");
+    logger.log("To clean up all test data, run:");
+    logger.log("  npx tsx packages/features/ee/billing/service/dueInvoice/seed-proration-test.ts --cleanup --skip-stripe");
+    logger.log("");
   } catch (error) {
     console.error("Error seeding data:", error);
     process.exit(1);

@@ -498,7 +498,7 @@ describe("getSchedule", () => {
             },
           });
 
-          console.log({ scheduleForEvent });
+          logger.log({ scheduleForEvent });
 
           expect(scheduleForEvent).toHaveTimeSlots(
             // All slots on current day are available

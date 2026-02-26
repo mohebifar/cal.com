@@ -160,7 +160,7 @@ test.describe("Insights > Charts Loading", () => {
 
       // Get all chart IDs before checking
       const chartIds = await getAllChartIds(page);
-      console.log(`[Routing] Found ${chartIds.length} charts: ${chartIds.join(", ")}`);
+      logger.log(`[Routing] Found ${chartIds.length} charts: ${chartIds.join(", ")}`);
 
       // Assert all charts load successfully
       await expectAllChartsToLoad(page, 20000); // 20 second timeout for all charts
@@ -257,7 +257,7 @@ test.describe("Insights > Charts Loading", () => {
 
       // Get all chart IDs before checking
       const chartIds = await getAllChartIds(page);
-      console.log(`[Bookings] Found ${chartIds.length} charts: ${chartIds.join(", ")}`);
+      logger.log(`[Bookings] Found ${chartIds.length} charts: ${chartIds.join(", ")}`);
 
       // Assert all charts load successfully
       await expectAllChartsToLoad(page, 20000); // 20 second timeout for all charts

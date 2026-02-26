@@ -38,19 +38,19 @@ function run(script: string, extraArgs: string[] = []): Promise<number> {
 }
 
 async function seedHwm(cleanup: boolean) {
-  console.log("\n--- Seeding High Water Mark test data ---\n");
+  logger.log("\n--- Seeding High Water Mark test data ---\n");
   const extra = cleanup ? ["--cleanup"] : [];
   return run(HWM_SCRIPT, extra);
 }
 
 async function seedProration(cleanup: boolean) {
-  console.log("\n--- Seeding Proration test data ---\n");
+  logger.log("\n--- Seeding Proration test data ---\n");
   const extra = cleanup ? ["--cleanup"] : [];
   return run(PRORATION_SCRIPT, extra);
 }
 
 async function seedActiveUser(cleanup: boolean) {
-  console.log("\n--- Seeding Active User Billing test data ---\n");
+  logger.log("\n--- Seeding Active User Billing test data ---\n");
   const extra = cleanup ? ["--cleanup"] : [];
   return run(ACTIVE_USER_SCRIPT, extra);
 }
@@ -65,7 +65,7 @@ async function seedAll(cleanup: boolean) {
 }
 
 async function cleanupAll() {
-  console.log("\n--- Cleaning up all billing test data ---\n");
+  logger.log("\n--- Cleaning up all billing test data ---\n");
   let code = await run(HWM_SCRIPT, ["--cleanup", "--skip-stripe"]);
   if (code !== 0) return code;
   code = await run(PRORATION_SCRIPT, ["--cleanup", "--skip-stripe"]);
@@ -88,18 +88,18 @@ function prompt(question: string): Promise<string> {
 }
 
 async function interactive() {
-  console.log("=== Billing Test Data Seeder ===\n");
-  console.log("  1) Seed HWM (High Water Mark) test data");
-  console.log("  2) Seed Proration test data");
-  console.log("  3) Seed Active User Billing test data");
-  console.log("  4) Seed all");
-  console.log("  5) Cleanup all test data");
-  console.log("  q) Quit\n");
+  logger.log("=== Billing Test Data Seeder ===\n");
+  logger.log("  1) Seed HWM (High Water Mark) test data");
+  logger.log("  2) Seed Proration test data");
+  logger.log("  3) Seed Active User Billing test data");
+  logger.log("  4) Seed all");
+  logger.log("  5) Cleanup all test data");
+  logger.log("  q) Quit\n");
 
   const choice = await prompt("Choose [1-5, q]: ");
 
   if (choice === "q" || choice === "") {
-    console.log("Bye.");
+    logger.log("Bye.");
     return;
   }
 
@@ -127,7 +127,7 @@ async function interactive() {
       code = await cleanupAll();
       break;
     default:
-      console.log(`Unknown option: ${choice}`);
+      logger.log(`Unknown option: ${choice}`);
       code = 1;
   }
 
