@@ -111,7 +111,7 @@ const createTeam = async (team: Prisma.TeamCreateInput) => {
     });
   } catch (_err) {
     if (_err instanceof Error && _err.message.indexOf("Unique constraint failed on the fields") !== -1) {
-      console.log(`Team '${team.name}' already exists, skipping.`);
+      logger.log(`Team '${team.name}' already exists, skipping.`);
       return;
     }
     throw _err;
@@ -159,9 +159,7 @@ async function createPlatformAndSetupUser({
 
   const platformUser = await setupPlatformUser(user);
 
-  console.log(
-    `👤 Upserted '${user.username}' with email "${user.email}" & password "${user.password}". Booking page 👉 ${process.env.NEXT_PUBLIC_WEBAPP_URL}/${user.username}`
-  );
+  logger.log(`👤 Upserted '${user.username}' with email "${user.email}" & password "${user.password}". Booking page 👉 ${process.env.NEXT_PUBLIC_WEBAPP_URL}/${user.username}`);
 
   const { username } = platformUser;
 
@@ -200,7 +198,7 @@ async function createPlatformAndSetupUser({
         },
       });
     }
-    console.log(`\t👤 Added '${teamInput.name}' membership for '${username}' with role '${membershipRole}'`);
+    logger.log(`\t👤 Added '${teamInput.name}' membership for '${username}' with role '${membershipRole}'`);
   }
 }
 
@@ -237,7 +235,7 @@ async function createTeamAndAddUsers(
       });
     } catch (_err) {
       if (_err instanceof Error && _err.message.indexOf("Unique constraint failed on the fields") !== -1) {
-        console.log(`Team '${team.name}' already exists, skipping.`);
+        logger.log(`Team '${team.name}' already exists, skipping.`);
         return;
       }
       throw _err;
@@ -249,9 +247,7 @@ async function createTeamAndAddUsers(
     return;
   }
 
-  console.log(
-    `🏢 Created team '${teamInput.name}' - ${process.env.NEXT_PUBLIC_WEBAPP_URL}/team/${team.slug}`
-  );
+  logger.log(`🏢 Created team '${teamInput.name}' - ${process.env.NEXT_PUBLIC_WEBAPP_URL}/team/${team.slug}`);
 
   for (const user of users) {
     const { role = MembershipRole.OWNER, id, username } = user;
@@ -264,7 +260,7 @@ async function createTeamAndAddUsers(
         accepted: true,
       },
     });
-    console.log(`\t👤 Added '${teamInput.name}' membership for '${username}' with role '${role}'`);
+    logger.log(`\t👤 Added '${teamInput.name}' membership for '${username}' with role '${role}'`);
   }
 
   // Connect users and create hosts for team event types
@@ -319,7 +315,7 @@ async function createOrganizationAndAddMembersAndTeams({
     email: string;
   }[];
 }) {
-  console.log(`\n🏢 Creating organization "${orgData.name}"`);
+  logger.log(`\n🏢 Creating organization "${orgData.name}"`);
 
   const existingTeam = await prisma.team.findFirst({
     where: {
@@ -329,7 +325,7 @@ async function createOrganizationAndAddMembersAndTeams({
   });
 
   if (existingTeam) {
-    console.log(`Organization with slug '${orgData.slug}' already exists, skipping.`);
+    logger.log(`Organization with slug '${orgData.slug}' already exists, skipping.`);
     return;
   }
 
@@ -411,7 +407,7 @@ async function createOrganizationAndAddMembersAndTeams({
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
-        console.log(`One of the organization members already exists, skipping the entire seeding`);
+        logger.log(`One of the organization members already exists, skipping the entire seeding`);
         return;
       }
     }
@@ -603,9 +599,7 @@ async function createOrganizationAndAddMembersAndTeams({
 
     const ownerForEvent = orgMembersInDBWithProfileId[0];
     if (!ownerForEvent) {
-      console.log(
-        `Warning: No organization members with profiles found for creating team event, skipping event creation for team ${team.teamData.slug}`
-      );
+      logger.log(`Warning: No organization members with profiles found for creating team event, skipping event creation for team ${team.teamData.slug}`);
       continue;
     }
     // Create event for each team
@@ -667,7 +661,7 @@ async function seedApiKey(userId: number, apiKey: string) {
   });
 
   if (existingKey) {
-    console.log(`🔑 API Key already exists, skipping.`);
+    logger.log(`🔑 API Key already exists, skipping.`);
     return;
   }
 
@@ -681,7 +675,7 @@ async function seedApiKey(userId: number, apiKey: string) {
   });
 
   const apiKeyPrefix = process.env.API_KEY_PREFIX ?? "cal_";
-  console.log(`🔑 Created seeded API Key: ${apiKeyPrefix}${apiKey}`);
+  logger.log(`🔑 Created seeded API Key: ${apiKeyPrefix}${apiKey}`);
 }
 
 async function ensureAcmeOwnerHasApiKeySeeded() {
@@ -1477,7 +1471,7 @@ async function main() {
     },
   });
   if (form) {
-    console.log(`Skipping Routing Form - Form Seed, "Seeded Form - Pro" already exists`);
+    logger.log(`Skipping Routing Form - Form Seed, "Seeded Form - Pro" already exists`);
   } else {
     const proUser = await prisma.user.findFirst({
       where: {
@@ -1486,7 +1480,7 @@ async function main() {
     });
 
     if (!proUser) {
-      console.log(`Skipping Routing Form - Seeding - Pro User not found`);
+      logger.log(`Skipping Routing Form - Seeding - Pro User not found`);
     } else {
       const multiSelectLegacyFieldId = "d2292635-9f12-17b1-9153-c3a854649182";
       await prisma.app_RoutingForms_Form.create({

@@ -91,7 +91,7 @@ export const createEmbedsFixture = (page: Page) => {
               console.log("Using api from namespace-", { calNamespace, api });
             }
             if (!api) {
-              console.log(`namespace "${calNamespace}" not found yet - Trying again`);
+              logger.log(`namespace "${calNamespace}" not found yet - Trying again`);
               setTimeout(tryAddingListener, 500);
               return;
             }
@@ -118,11 +118,11 @@ export const createEmbedsFixture = (page: Page) => {
       );
 
       page.on("console", (msg) => {
-        console.log(`Browser Console: ${msg.type()}: ${msg.text()}`);
+        logger.log(`Browser Console: ${msg.type()}: ${msg.text()}`);
       });
 
       page.on("framenavigated", async (frame) => {
-        console.log(`Navigation occurred in frame: ${frame.url()}`);
+        logger.log(`Navigation occurred in frame: ${frame.url()}`);
       });
 
       page.on("pageerror", (error) => {

@@ -316,7 +316,7 @@ export class TeamService {
         });
       }
     } catch (e) {
-      console.log(e);
+      logger.log(e);
     }
   }
 

@@ -39,7 +39,7 @@ function adjustEnvVariables(): void {
     }
 
     if (!process.env.ORGANIZATIONS_ENABLED) {
-      console.log("Auto-enabling ORGANIZATIONS_ENABLED because SINGLE_ORG_SLUG is set");
+      logger.log("Auto-enabling ORGANIZATIONS_ENABLED because SINGLE_ORG_SLUG is set");
       envMutable.ORGANIZATIONS_ENABLED = "1";
     }
   }
@@ -212,13 +212,9 @@ const orgDomainMatcherConfig: {
 
 const nextConfig = (phase: string): NextConfig => {
   if (isOrganizationsEnabled) {
-    console.log(
-      `[Phase: ${phase}] Adding rewrite config for organizations - orgHostPath: ${nextJsOrgRewriteConfig.orgHostPath}, orgSlug: ${nextJsOrgRewriteConfig.orgSlug}, disableRootPathRewrite: ${nextJsOrgRewriteConfig.disableRootPathRewrite}`
-    );
+    logger.log(`[Phase: ${phase}] Adding rewrite config for organizations - orgHostPath: ${nextJsOrgRewriteConfig.orgHostPath}, orgSlug: ${nextJsOrgRewriteConfig.orgSlug}, disableRootPathRewrite: ${nextJsOrgRewriteConfig.disableRootPathRewrite}`);
   } else {
-    console.log(
-      `[Phase: ${phase}] Skipping rewrite config for organizations because ORGANIZATIONS_ENABLED is not set`
-    );
+    logger.log(`[Phase: ${phase}] Skipping rewrite config for organizations because ORGANIZATIONS_ENABLED is not set`);
   }
 
   return {

@@ -87,42 +87,42 @@ async function main() {
     process.exit(1);
   }
 
-  console.log("Fetching existing knowledge from Devin API...\n");
+  logger.log("Fetching existing knowledge from Devin API...\n");
   const remoteData = await listKnowledge();
 
   const entryCount = remoteData.knowledge.length;
 
   if (entryCount === 0) {
-    console.log("No knowledge entries found. Nothing to delete.");
+    logger.log("No knowledge entries found. Nothing to delete.");
     process.exit(0);
   }
 
-  console.log(`Found ${entryCount} knowledge entries:\n`);
+  logger.log(`Found ${entryCount} knowledge entries:\n`);
   for (const entry of remoteData.knowledge) {
-    console.log(`  - ${entry.name}`);
+    logger.log(`  - ${entry.name}`);
   }
 
-  console.log("\n⚠️  WARNING: This will permanently delete ALL knowledge entries listed above!");
-  console.log("This action cannot be undone.\n");
+  logger.log("\n⚠️  WARNING: This will permanently delete ALL knowledge entries listed above!");
+  logger.log("This action cannot be undone.\n");
 
   const confirmed = await askConfirmation("Are you sure you want to delete all entries? (Y/n): ");
 
   if (!confirmed) {
-    console.log("\nAborted. No entries were deleted.");
+    logger.log("\nAborted. No entries were deleted.");
     process.exit(0);
   }
 
-  console.log("\nDeleting all knowledge entries...\n");
+  logger.log("\nDeleting all knowledge entries...\n");
 
   let deleted = 0;
   for (const entry of remoteData.knowledge) {
     process.stdout.write(`  Deleting: ${entry.name}...`);
     await deleteKnowledge(entry.id);
-    console.log(" ✓");
+    logger.log(" ✓");
     deleted++;
   }
 
-  console.log(`\nSuccessfully deleted ${deleted} knowledge entries.`);
+  logger.log(`\nSuccessfully deleted ${deleted} knowledge entries.`);
 }
 
 main().catch((error) => {

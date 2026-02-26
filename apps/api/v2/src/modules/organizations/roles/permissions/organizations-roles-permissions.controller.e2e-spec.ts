@@ -387,10 +387,10 @@ describe("Organizations Roles Permissions Endpoints", () => {
       try {
         await featuresRepositoryFixture.deleteBySlug("pbac");
       } catch (err) {
-        console.log(err);
+        logger.log(err);
       }
     } catch (err) {
-      console.log(err);
+      logger.log(err);
     } finally {
       await app.close();
     }

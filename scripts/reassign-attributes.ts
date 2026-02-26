@@ -22,7 +22,7 @@ const reassignAttributes = async () => {
     },
   });
 
-  console.log(`Found ${usersWithAttribute.length} users with attribute ${lookupAttributeId}`);
+  logger.log(`Found ${usersWithAttribute.length} users with attribute ${lookupAttributeId}`);
 
   // Assign the new attributes to these users
   for (const attributeId of attributeIdsToAssign) {
@@ -34,7 +34,7 @@ const reassignAttributes = async () => {
       skipDuplicates: true, // Skip if user already has this attribute
     });
 
-    console.log(`Assigned attribute ${attributeId} to ${results.count} users`);
+    logger.log(`Assigned attribute ${attributeId} to ${results.count} users`);
   }
 };
 

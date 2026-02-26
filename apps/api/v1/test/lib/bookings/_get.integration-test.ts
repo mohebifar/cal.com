@@ -415,7 +415,7 @@ describe("GET /api/bookings", () => {
           .filter(([_, count]) => count > 1)
           .map(([id]) => id);
 
-        console.log(`Found duplicate booking IDs: ${duplicates.join(", ")}`);
+        logger.log(`Found duplicate booking IDs: ${duplicates.join(", ")}`);
       }
     });
   });

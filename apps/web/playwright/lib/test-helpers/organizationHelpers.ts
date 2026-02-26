@@ -58,7 +58,7 @@ interface SeedAttributesConfig {
 export async function createAttributes(config: SeedAttributesConfig) {
   const { orgId, attributes: attributeConfigs, assignments = [] } = config;
 
-  console.log(`🎯 Seeding attributes for org ${orgId}`);
+  logger.log(`🎯 Seeding attributes for org ${orgId}`);
 
   // Check if attributes already exist
   const existingAttributes = await prisma.attribute.findMany({
@@ -71,7 +71,7 @@ export async function createAttributes(config: SeedAttributesConfig) {
   });
 
   if (existingAttributes.length > 0) {
-    console.log(`Skipping attributes seed, attributes already exist`);
+    logger.log(`Skipping attributes seed, attributes already exist`);
     return;
   }
 
@@ -85,7 +85,7 @@ export async function createAttributes(config: SeedAttributesConfig) {
     },
   });
 
-  console.log(`🎯 Creating attributes for org ${orgId}`);
+  logger.log(`🎯 Creating attributes for org ${orgId}`);
 
   const attributes: { id: string; name: string; options: { id: string; value: string }[] }[] = [];
 
@@ -120,7 +120,7 @@ export async function createAttributes(config: SeedAttributesConfig) {
       })),
     });
 
-    console.log(`\t📝 Created attribute: ${attr.name}`);
+    logger.log(`\t📝 Created attribute: ${attr.name}`);
 
     // Process assignments for this attribute
     for (const assignment of assignments) {
@@ -129,16 +129,14 @@ export async function createAttributes(config: SeedAttributesConfig) {
       // Check if this assignment has values for the current attribute
       const valuesForAttribute = attributeValues[attr.name];
       if (!valuesForAttribute || valuesForAttribute.length === 0) {
-        console.log(
-          `\t\t⏭️ Skipped ${attr.name} assignment for member ${memberIndex + 1} - no values specified`
-        );
+        logger.log(`\t\t⏭️ Skipped ${attr.name} assignment for member ${memberIndex + 1} - no values specified`);
         continue;
       }
 
       // Get the member at the specified index
       const member = memberships[memberIndex];
       if (!member) {
-        console.log(`\t\t⚠️ Skipped ${attr.name} assignment - member at index ${memberIndex} not found`);
+        logger.log(`\t\t⚠️ Skipped ${attr.name} assignment - member at index ${memberIndex} not found`);
         continue;
       }
 
@@ -146,11 +144,9 @@ export async function createAttributes(config: SeedAttributesConfig) {
       const selectedOptions = attribute.options.filter((opt) => valuesForAttribute.includes(opt.value));
 
       if (selectedOptions.length === 0) {
-        console.log(
-          `\t\t⚠️ Skipped ${attr.name} assignment for user ${
-            member.userId
-          } - no matching options found for values: ${valuesForAttribute.join(", ")}`
-        );
+        logger.log(`\t\t⚠️ Skipped ${attr.name} assignment for user ${
+          member.userId
+        } - no matching options found for values: ${valuesForAttribute.join(", ")}`);
         continue;
       }
 
@@ -165,11 +161,9 @@ export async function createAttributes(config: SeedAttributesConfig) {
       }
 
       const assignedValues = selectedOptions.map((opt) => opt.value);
-      console.log(
-        `\t\t✅ Assigned ${attr.name} [${assignedValues.map((v) => `"${v}"`).join(", ")}] to user ${
-          member.userId
-        } (member ${memberIndex + 1})`
-      );
+      logger.log(`\t\t✅ Assigned ${attr.name} [${assignedValues.map((v) => `"${v}"`).join(", ")}] to user ${
+        member.userId
+      } (member ${memberIndex + 1})`);
     }
   }
 

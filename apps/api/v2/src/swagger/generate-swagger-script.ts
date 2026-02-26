@@ -6,7 +6,7 @@ import { generateSwaggerForApp } from "../swagger/generate-swagger";
 
 generateSwagger()
   .then(() => {
-    console.log("✅ Swagger generation completed successfully");
+    logger.log("✅ Swagger generation completed successfully");
     process.exit(0);
   })
   .catch((error: Error) => {

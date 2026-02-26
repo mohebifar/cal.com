@@ -104,24 +104,24 @@ async function createTestUser(
 
 function getStripeClient(): Stripe | null {
   if (SKIP_STRIPE) {
-    console.log("Skipping Stripe API calls (--skip-stripe flag)");
+    logger.log("Skipping Stripe API calls (--skip-stripe flag)");
     return null;
   }
   if (!process.env.STRIPE_PRIVATE_KEY) {
-    console.log("STRIPE_PRIVATE_KEY not set, skipping Stripe API calls");
+    logger.log("STRIPE_PRIVATE_KEY not set, skipping Stripe API calls");
     return null;
   }
   return new Stripe(process.env.STRIPE_PRIVATE_KEY, { apiVersion: "2020-08-27" });
 }
 
 async function cleanupStripeResources(stripe: Stripe) {
-  console.log("Cleaning up Stripe resources...");
+  logger.log("Cleaning up Stripe resources...");
   const testClocks = await stripe.testHelpers.testClocks.list({ limit: 100 });
   for (const clock of testClocks.data) {
     if (clock.name?.startsWith("AUB Test")) {
       try {
         await stripe.testHelpers.testClocks.del(clock.id);
-        console.log(`  Deleted test clock: ${clock.id}`);
+        logger.log(`  Deleted test clock: ${clock.id}`);
       } catch {
         // ignore
       }
@@ -136,7 +136,7 @@ async function cleanupStripeResources(stripe: Stripe) {
         if (sub.status !== "canceled") await stripe.subscriptions.cancel(sub.id);
       }
       await stripe.customers.del(customer.id);
-      console.log(`  Deleted customer: ${customer.id}`);
+      logger.log(`  Deleted customer: ${customer.id}`);
     } catch {
       // ignore
     }
@@ -144,7 +144,7 @@ async function cleanupStripeResources(stripe: Stripe) {
 }
 
 async function cleanupDatabaseResources() {
-  console.log("Cleaning up database resources...");
+  logger.log("Cleaning up database resources...");
 
   const org = await prisma.team.findFirst({ where: { slug: ORG_SLUG, isOrganization: true } });
 
@@ -164,7 +164,7 @@ async function cleanupDatabaseResources() {
       if (bookingIds.length > 0) {
         await prisma.attendee.deleteMany({ where: { bookingId: { in: bookingIds } } });
         await prisma.booking.deleteMany({ where: { id: { in: bookingIds } } });
-        console.log(`  Deleted ${bookingIds.length} bookings`);
+        logger.log(`  Deleted ${bookingIds.length} bookings`);
       }
     }
 
@@ -172,13 +172,13 @@ async function cleanupDatabaseResources() {
     await prisma.organizationSettings.deleteMany({ where: { organizationId: org.id } });
     await prisma.membership.deleteMany({ where: { teamId: org.id } });
     await prisma.team.delete({ where: { id: org.id } });
-    console.log(`  Deleted org (ID: ${org.id})`);
+    logger.log(`  Deleted org (ID: ${org.id})`);
   }
 
   const deleteResult = await prisma.user.deleteMany({ where: { email: { in: ALL_EMAILS } } });
-  if (deleteResult.count > 0) console.log(`  Deleted ${deleteResult.count} users`);
+  if (deleteResult.count > 0) logger.log(`  Deleted ${deleteResult.count} users`);
 
-  console.log("  Database cleanup complete");
+  logger.log("  Database cleanup complete");
 }
 
 interface UserRecord {
@@ -213,7 +213,7 @@ async function seed(): Promise<SeedResult> {
       stale: false,
     },
   });
-  console.log("Enabled active-user-billing feature flag");
+  logger.log("Enabled active-user-billing feature flag");
 
   if (CLEANUP_FIRST) {
     await cleanupDatabaseResources();
@@ -221,14 +221,14 @@ async function seed(): Promise<SeedResult> {
   }
 
   // Create organization
-  console.log("\nCreating organization...");
+  logger.log("\nCreating organization...");
   let org = await prisma.team.findFirst({ where: { slug: ORG_SLUG, isOrganization: true } });
   if (!org) {
     org = await prisma.team.create({
       data: { name: "AUB Test Org", slug: ORG_SLUG, isOrganization: true },
     });
   }
-  console.log(`  Organization: ${org.name} (ID: ${org.id})`);
+  logger.log(`  Organization: ${org.name} (ID: ${org.id})`);
 
   await prisma.organizationSettings.upsert({
     where: { organizationId: org.id },
@@ -242,7 +242,7 @@ async function seed(): Promise<SeedResult> {
   });
 
   // Create users (admin + 99 members = 100 total)
-  console.log(`Creating ${TOTAL_MEMBERS + 1} users...`);
+  logger.log(`Creating ${TOTAL_MEMBERS + 1} users...`);
   const admin = await createTestUser(ORG_ADMIN_EMAIL, "AUB Org Admin", "aub-org-admin", org.id);
   const members: UserRecord[] = [];
   for (let i = 0; i < TOTAL_MEMBERS; i++) {
@@ -253,12 +253,12 @@ async function seed(): Promise<SeedResult> {
       org.id
     );
     members.push(user);
-    if ((i + 1) % 25 === 0) console.log(`  ... created ${i + 1}/${TOTAL_MEMBERS} members`);
+    if ((i + 1) % 25 === 0) logger.log(`  ... created ${i + 1}/${TOTAL_MEMBERS} members`);
   }
-  console.log(`  Created admin + ${members.length} members = ${members.length + 1} total`);
+  logger.log(`  Created admin + ${members.length} members = ${members.length + 1} total`);
 
   // Add memberships
-  console.log("Adding memberships...");
+  logger.log("Adding memberships...");
   await prisma.membership.upsert({
     where: { userId_teamId: { userId: admin.id, teamId: org.id } },
     update: { role: MembershipRole.OWNER },
@@ -288,7 +288,7 @@ async function seed(): Promise<SeedResult> {
       throw new Error("STRIPE_ORG_MONTHLY_PRICE_ID is required when running with Stripe");
     }
 
-    console.log("\nCreating Stripe resources...");
+    logger.log("\nCreating Stripe resources...");
     const price = await stripe.prices.retrieve(STRIPE_ORG_MONTHLY_PRICE_ID);
     pricePerSeatCents = price.unit_amount || ORG_PRICE_PER_SEAT_CENTS;
     const product =
@@ -300,7 +300,7 @@ async function seed(): Promise<SeedResult> {
       frozen_time: Math.floor(Date.now() / 1000),
       name: "AUB Test - Active User Billing",
     });
-    console.log(`  Test clock: ${testClock.id}`);
+    logger.log(`  Test clock: ${testClock.id}`);
 
     const customer = await stripe.customers.create({
       email: ORG_ADMIN_EMAIL,
@@ -330,13 +330,11 @@ async function seed(): Promise<SeedResult> {
     periodStart = new Date(subscription.current_period_start * 1000);
     periodEnd = new Date(subscription.current_period_end * 1000);
 
-    console.log(`  Customer: ${customer.id}`);
-    console.log(`  Subscription: ${subscription.id} (${totalMembers} seats)`);
-    console.log(`  Product: ${product.id} (${product.name})`);
-    console.log(`  Stripe period: ${periodStart.toISOString()} - ${periodEnd.toISOString()}`);
-    console.log(
-      `  Test clock URL: https://dashboard.stripe.com/test/test-clocks/${testClock.id}`
-    );
+    logger.log(`  Customer: ${customer.id}`);
+    logger.log(`  Subscription: ${subscription.id} (${totalMembers} seats)`);
+    logger.log(`  Product: ${product.id} (${product.name})`);
+    logger.log(`  Stripe period: ${periodStart.toISOString()} - ${periodEnd.toISOString()}`);
+    logger.log(`  Test clock URL: https://dashboard.stripe.com/test/test-clocks/${testClock.id}`);
   }
 
   // Create bookings within the billing period to produce exactly 30 active users:
@@ -350,7 +348,7 @@ async function seed(): Promise<SeedResult> {
   // Total active = 1 admin host + 19 member hosts + 10 attendees = 30
   // Total inactive = 1 out-of-range host + 69 idle = 70
 
-  console.log(`Creating bookings in period ${periodStart.toISOString()} - ${periodEnd.toISOString()}...`);
+  logger.log(`Creating bookings in period ${periodStart.toISOString()} - ${periodEnd.toISOString()}...`);
   const bookingIds: number[] = [];
 
   async function createBooking(
@@ -411,7 +409,7 @@ async function seed(): Promise<SeedResult> {
   outsidePeriod.setUTCDate(15);
   await createBooking(members[29], outsidePeriod, hourLater(outsidePeriod));
 
-  console.log(`  Created ${bookingIds.length} bookings`);
+  logger.log(`  Created ${bookingIds.length} bookings`);
 
   // Build expected lists
   const expectedActiveHosts = [
@@ -466,9 +464,7 @@ async function seed(): Promise<SeedResult> {
     },
   });
 
-  console.log(
-    `\n  OrganizationBilling created (MONTHLY, billingMode=ACTIVE_USERS, $${pricePerSeatCents / 100}/seat, ${totalMembers} paid seats)`
-  );
+  logger.log(`\n  OrganizationBilling created (MONTHLY, billingMode=ACTIVE_USERS, $${pricePerSeatCents / 100}/seat, ${totalMembers} paid seats)`);
 
   return {
     orgId: org.id,
@@ -483,17 +479,17 @@ async function seed(): Promise<SeedResult> {
 }
 
 async function main() {
-  console.log("=== Active User Billing (AUB) Seed Script ===\n");
-  console.log("Options:");
-  console.log(`  --skip-stripe: ${SKIP_STRIPE}`);
-  console.log(`  --cleanup: ${CLEANUP_FIRST}`);
-  console.log("");
+  logger.log("=== Active User Billing (AUB) Seed Script ===\n");
+  logger.log("Options:");
+  logger.log(`  --skip-stripe: ${SKIP_STRIPE}`);
+  logger.log(`  --cleanup: ${CLEANUP_FIRST}`);
+  logger.log("");
 
   try {
     const result = await seed();
 
     // Run the service to count active users
-    console.log("\n--- Running ActiveUserBillingService ---\n");
+    logger.log("\n--- Running ActiveUserBillingService ---\n");
     const repo = new ActiveUserBillingRepository(prisma);
     const service = new ActiveUserBillingService({ activeUserBillingRepository: repo });
 
@@ -507,49 +503,45 @@ async function main() {
       result.expectedActiveHosts.length + result.expectedActiveAttendees.length;
 
     // Print summary
-    console.log("=== Summary ===\n");
-    console.log(`  Organization ID:    ${result.orgId}`);
-    console.log(`  Subscription ID:    ${result.subscriptionId}`);
-    console.log(
-      `  Billing period:     ${result.periodStart.toISOString()} - ${result.periodEnd.toISOString()}`
-    );
-    console.log(`  Total members:      ${result.totalMembers}`);
-    console.log("");
+    logger.log("=== Summary ===\n");
+    logger.log(`  Organization ID:    ${result.orgId}`);
+    logger.log(`  Subscription ID:    ${result.subscriptionId}`);
+    logger.log(`  Billing period:     ${result.periodStart.toISOString()} - ${result.periodEnd.toISOString()}`);
+    logger.log(`  Total members:      ${result.totalMembers}`);
+    logger.log("");
 
-    console.log(`  Active hosts (${result.expectedActiveHosts.length}):`);
+    logger.log(`  Active hosts (${result.expectedActiveHosts.length}):`);
     for (const email of result.expectedActiveHosts) {
-      console.log(`    - ${email}`);
+      logger.log(`    - ${email}`);
     }
 
-    console.log(`  Active attendees only (${result.expectedActiveAttendees.length}):`);
+    logger.log(`  Active attendees only (${result.expectedActiveAttendees.length}):`);
     for (const email of result.expectedActiveAttendees) {
-      console.log(`    - ${email}`);
+      logger.log(`    - ${email}`);
     }
 
-    console.log(`  Inactive (${result.expectedInactive.length}):`);
-    console.log(`    (${result.expectedInactive.length} members with no in-period bookings)`);
+    logger.log(`  Inactive (${result.expectedInactive.length}):`);
+    logger.log(`    (${result.expectedInactive.length} members with no in-period bookings)`);
 
-    console.log("");
-    console.log("  +--------------------------+---------+");
-    console.log("  | Category                 | Count   |");
-    console.log("  +--------------------------+---------+");
-    console.log(`  | Total org members        | ${String(result.totalMembers).padStart(7)} |`);
-    console.log(`  | Active hosts (created)   | ${String(result.expectedActiveHosts.length).padStart(7)} |`);
-    console.log(`  | Active attendees (created)| ${String(result.expectedActiveAttendees.length).padStart(6)} |`);
-    console.log(`  | Total active (created)   | ${String(expectedTotal).padStart(7)} |`);
-    console.log(`  | Inactive (created)       | ${String(result.expectedInactive.length).padStart(7)} |`);
-    console.log(`  | Service counted          | ${String(serviceCount).padStart(7)} |`);
-    console.log("  +--------------------------+---------+");
+    logger.log("");
+    logger.log("  +--------------------------+---------+");
+    logger.log("  | Category                 | Count   |");
+    logger.log("  +--------------------------+---------+");
+    logger.log(`  | Total org members        | ${String(result.totalMembers).padStart(7)} |`);
+    logger.log(`  | Active hosts (created)   | ${String(result.expectedActiveHosts.length).padStart(7)} |`);
+    logger.log(`  | Active attendees (created)| ${String(result.expectedActiveAttendees.length).padStart(6)} |`);
+    logger.log(`  | Total active (created)   | ${String(expectedTotal).padStart(7)} |`);
+    logger.log(`  | Inactive (created)       | ${String(result.expectedInactive.length).padStart(7)} |`);
+    logger.log(`  | Service counted          | ${String(serviceCount).padStart(7)} |`);
+    logger.log("  +--------------------------+---------+");
 
     if (serviceCount === expectedTotal) {
-      console.log("\n  [PASS] Service count matches expected count.");
+      logger.log("\n  [PASS] Service count matches expected count.");
     } else {
-      console.log(
-        `\n  [MISMATCH] Expected ${expectedTotal}, service returned ${serviceCount}.`
-      );
+      logger.log(`\n  [MISMATCH] Expected ${expectedTotal}, service returned ${serviceCount}.`);
     }
 
-    console.log("\n=== Done ===\n");
+    logger.log("\n=== Done ===\n");
     process.exit(0);
   } catch (error) {
     console.error("Seed failed:", error);

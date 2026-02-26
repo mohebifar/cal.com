@@ -265,7 +265,7 @@ describe("embed-iframe", async () => {
         writable: true,
         configurable: true,
       });
-      console.log('Importing embed-iframe');
+      logger.log('Importing embed-iframe');
       await import("../embed-iframe");
       embedStore.viewId = null;
       resetPageData();

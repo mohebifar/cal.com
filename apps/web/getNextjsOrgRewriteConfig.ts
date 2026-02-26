@@ -37,7 +37,7 @@ export interface NextJsOrgRewriteConfig {
 // For app.cal.com, it will match all domains that are not starting with "app". Technically we would want to match domains like acme.cal.com, dunder.cal.com and not app.cal.com
 export const getRegExpThatMatchesAllOrgDomains = ({ webAppUrl }: { webAppUrl: string }): string => {
   if (isSingleOrgModeEnabled) {
-    console.log("Single-Org-Mode enabled - Consider all domains to be org domains");
+    logger.log("Single-Org-Mode enabled - Consider all domains to be org domains");
     // It works in combination with next.config.js where in this case we use orgSlug=NEXT_PUBLIC_SINGLE_ORG_SLUG
     return `.*`;
   }
