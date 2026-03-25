@@ -2,7 +2,7 @@ import "dotenv/config";
 
 import { bootstrap } from "../bootstrap";
 import { createNestApp } from "../main";
-import { generateSwaggerForApp } from "../swagger/generate-swagger";
+import { generateSwaggerForApp } from "./generate-swagger";
 
 generateSwagger()
   .then(() => {

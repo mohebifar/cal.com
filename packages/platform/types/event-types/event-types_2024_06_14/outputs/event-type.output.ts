@@ -37,27 +37,7 @@ import type { ConfirmationPolicy_2024_06_14 } from "../inputs/confirmation-polic
 import { DestinationCalendar_2024_06_14 } from "../inputs/destination-calendar.input";
 import type { Disabled_2024_06_14 } from "../inputs/disabled.input";
 import { EmailSettings_2024_06_14 } from "../inputs/email-settings.input";
-import {
-  EmailDefaultFieldOutput_2024_06_14,
-  NameDefaultFieldOutput_2024_06_14,
-  LocationDefaultFieldOutput_2024_06_14,
-  RescheduleReasonDefaultFieldOutput_2024_06_14,
-  TitleDefaultFieldOutput_2024_06_14,
-  NotesDefaultFieldOutput_2024_06_14,
-  GuestsDefaultFieldOutput_2024_06_14,
-  AddressFieldOutput_2024_06_14,
-  BooleanFieldOutput_2024_06_14,
-  CheckboxGroupFieldOutput_2024_06_14,
-  MultiEmailFieldOutput_2024_06_14,
-  MultiSelectFieldOutput_2024_06_14,
-  NumberFieldOutput_2024_06_14,
-  PhoneFieldOutput_2024_06_14,
-  RadioGroupFieldOutput_2024_06_14,
-  SelectFieldOutput_2024_06_14,
-  TextAreaFieldOutput_2024_06_14,
-  TextFieldOutput_2024_06_14,
-  UrlFieldOutput_2024_06_14,
-} from "../outputs/booking-fields.output";
+import { EmailDefaultFieldOutput_2024_06_14, NameDefaultFieldOutput_2024_06_14, LocationDefaultFieldOutput_2024_06_14, RescheduleReasonDefaultFieldOutput_2024_06_14, TitleDefaultFieldOutput_2024_06_14, NotesDefaultFieldOutput_2024_06_14, GuestsDefaultFieldOutput_2024_06_14, AddressFieldOutput_2024_06_14, BooleanFieldOutput_2024_06_14, CheckboxGroupFieldOutput_2024_06_14, MultiEmailFieldOutput_2024_06_14, MultiSelectFieldOutput_2024_06_14, NumberFieldOutput_2024_06_14, PhoneFieldOutput_2024_06_14, RadioGroupFieldOutput_2024_06_14, SelectFieldOutput_2024_06_14, TextAreaFieldOutput_2024_06_14, TextFieldOutput_2024_06_14, UrlFieldOutput_2024_06_14 } from "./booking-fields.output";
 import { BookerActiveBookingsLimitOutput_2024_06_14 } from "./booker-active-bookings-limit.output";
 import { DisableCancellingOutput_2024_06_14 } from "./disable-cancelling.output";
 import { DisableReschedulingOutput_2024_06_14 } from "./disable-rescheduling.output";

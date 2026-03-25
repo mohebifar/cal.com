@@ -11,19 +11,14 @@ import {
 
 import { isAttendeeAction } from "../actionHelperFunctions";
 import { IMMEDIATE_WORKFLOW_TRIGGER_EVENTS } from "../constants";
-import {
-  getContentSidForTemplate,
-  getContentVariablesForTemplate,
-} from "../reminders/templates/whatsapp/ContentSidMapping";
+import { getContentSidForTemplate, getContentVariablesForTemplate } from "./templates/whatsapp/ContentSidMapping";
 import type { BookingInfo } from "../types";
 import { scheduleSmsOrFallbackEmail, sendSmsOrFallbackEmail } from "./messageDispatcher";
 import type { ScheduleTextReminderArgs, timeUnitLowerCase } from "./smsReminderManager";
-import {
-  whatsappEventCancelledTemplate,
-  whatsappEventCompletedTemplate,
-  whatsappEventRescheduledTemplate,
-  whatsappReminderTemplate,
-} from "./templates/whatsapp";
+import { whatsappEventCancelledTemplate } from "./templates/whatsapp/whatsappEventCancelledTemplate";
+import { whatsappEventCompletedTemplate } from "./templates/whatsapp/whatsappEventCompletedTemplate";
+import { whatsappEventRescheduledTemplate } from "./templates/whatsapp/whatsappEventRescheduledTemplate";
+import { whatsappReminderTemplate } from "./templates/whatsapp/whatsappEventReminderTemplate";
 
 const log = logger.getSubLogger({ prefix: ["[whatsappReminderManager]"] });
 

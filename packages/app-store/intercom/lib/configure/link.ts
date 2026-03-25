@@ -11,7 +11,7 @@ import type {
   TextComponent,
   InputComponent,
 } from "../../lib";
-import { isValidCalURL } from "../../lib/isValidCalURL";
+import { isValidCalURL } from "../isValidCalURL";
 
 export async function handleLinkStep(req: NextApiRequest): Promise<NewCanvas | string> {
   const { admin, component_id, input_values } = req.body;
