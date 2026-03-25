@@ -1,6 +1,6 @@
 import { sleep } from "k6";
-import { THRESHOLDS } from "../utils/config.js";
-import { viewBookingPage } from "../utils/helpers.js";
+import { THRESHOLDS } from "../utils/config";
+import { viewBookingPage } from "../utils/helpers";
 
 export const options = {
   stages: [

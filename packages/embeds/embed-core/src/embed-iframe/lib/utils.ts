@@ -1,5 +1,5 @@
 import { sdkActionManager } from "../../sdk-event";
-import { type EmbedStore } from "../lib/embedStore";
+import { EmbedStore } from "./embedStore";
 
 export const isBrowser = typeof window !== "undefined";
 

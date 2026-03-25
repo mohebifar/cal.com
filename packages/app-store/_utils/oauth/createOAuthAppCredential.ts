@@ -3,7 +3,7 @@ import type { NextApiRequest } from "next";
 import { HttpError } from "@calcom/lib/http-error";
 import prisma from "@calcom/prisma";
 
-import { decodeOAuthState } from "../oauth/decodeOAuthState";
+import { decodeOAuthState } from "./decodeOAuthState";
 import { throwIfNotHaveAdminAccessToTeam } from "../throwIfNotHaveAdminAccessToTeam";
 
 /**

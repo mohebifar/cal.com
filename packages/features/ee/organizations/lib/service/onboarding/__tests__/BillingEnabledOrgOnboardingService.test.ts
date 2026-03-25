@@ -8,7 +8,7 @@ import { UserPermissionRole, CreationSource, MembershipRole, BillingPeriod } fro
 import { createTeamsHandler } from "@calcom/trpc/server/routers/viewer/organizations/createTeams.handler";
 import { inviteMembersWithNoInviterPermissionCheck } from "@calcom/trpc/server/routers/viewer/teams/inviteMember/inviteMember.handler";
 
-import type { CreateOnboardingIntentInput } from "../../onboarding/types";
+import { CreateOnboardingIntentInput } from "../types";
 import { BillingEnabledOrgOnboardingService } from "../BillingEnabledOrgOnboardingService";
 
 vi.mock("../../OrganizationPaymentService");

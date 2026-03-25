@@ -1,6 +1,6 @@
 import { useSearchParams } from "next/navigation";
 
-import { useIsPlatform } from "@calcom/atoms/hooks/useIsPlatform";
+import { useIsPlatform } from "../useIsPlatform";
 import { useBookerStoreContext } from "@calcom/features/bookings/Booker/BookerStoreProvider";
 import { useBookerTime } from "@calcom/features/bookings/Booker/hooks/useBookerTime";
 import type { UseBookingFormReturnType } from "@calcom/features/bookings/Booker/hooks/useBookingForm";

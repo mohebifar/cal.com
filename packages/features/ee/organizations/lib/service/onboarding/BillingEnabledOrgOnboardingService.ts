@@ -8,13 +8,8 @@ import { getTranslation } from "@calcom/lib/server/i18n";
 import type { Team, User } from "@calcom/prisma/client";
 import { orgOnboardingInvitedMembersSchema, orgOnboardingTeamsSchema } from "@calcom/prisma/zod-utils";
 
-import { BaseOnboardingService } from "../onboarding/BaseOnboardingService";
-import type {
-  CreateOnboardingIntentInput,
-  OnboardingIntentResult,
-  OrganizationOnboardingData,
-  OrganizationData,
-} from "../onboarding/types";
+import { BaseOnboardingService } from "./BaseOnboardingService";
+import { CreateOnboardingIntentInput, OnboardingIntentResult, OrganizationOnboardingData, OrganizationData } from "./types";
 
 const log = logger.getSubLogger({ prefix: ["BillingEnabledOrgOnboardingService"] });
 

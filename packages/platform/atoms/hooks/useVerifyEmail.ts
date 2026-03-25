@@ -7,7 +7,7 @@ import { useDebounce } from "@calcom/lib/hooks/useDebounce";
 import { SUCCESS_STATUS } from "@calcom/platform-constants";
 import type { ApiResponse, ApiErrorResponse, ApiSuccessResponseWithoutData } from "@calcom/platform-types";
 
-import { useMe } from "../hooks/useMe";
+import { useMe } from "./useMe";
 import http from "../lib/http";
 
 export interface IUseVerifyEmailProps {
