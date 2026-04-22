@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { createContext, forwardRef, useContext, useState } from "react";
+import { createContext, forwardRef, use, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -431,8 +431,8 @@ export const FormAction = forwardRef(function FormAction<T extends typeof Button
     extraClassNames,
     ...additionalProps
   } = props;
-  const { appUrl, _delete, toggle, setNewFormDialogState } = useContext(actionsCtx);
-  const dropdownCtxValue = useContext(dropdownCtx);
+  const { appUrl, _delete, toggle, setNewFormDialogState } = use(actionsCtx);
+  const dropdownCtxValue = use(dropdownCtx);
   const dropdown = dropdownCtxValue?.dropdown;
   const embedLink = `forms/${routingForm?.id}`;
   const orgBranding = useOrgBranding();

@@ -96,7 +96,7 @@ export function useCalendarStore<T>(
   selector: (state: CalendarStoreProps) => T,
   equalityFn?: (a: T, b: T) => boolean
 ): T {
-  const store = React.useContext(CalendarStoreContext);
+  const store = React.use(CalendarStoreContext);
   if (!store) {
     throw new Error("useCalendarStore must be used within a CalendarStoreProvider");
   }

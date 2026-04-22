@@ -1,3 +1,4 @@
+import { createRoot } from "react-dom/client";
 /**
  * @fileoverview This file is an example file and tells how to use the Cal component in a React application. This is also used by playwright e2e
  */
@@ -117,4 +118,5 @@ function App() {
     </>
   );
 }
-ReactDom.render(<App />, document.getElementById("root"));
+const root = createRoot(document.getElementById("root"));
+root.render(<App />);

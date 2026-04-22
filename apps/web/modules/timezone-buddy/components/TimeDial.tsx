@@ -1,5 +1,5 @@
 import type { MouseEventHandler } from "react";
-import { useContext } from "react";
+import { use } from "react";
 import { useStore } from "zustand";
 
 import type { Dayjs } from "@calcom/dayjs";
@@ -85,7 +85,7 @@ function isCurrentHourInRange({
 }
 
 export function TimeDial({ timezone, dateRanges }: TimeDialProps) {
-  const store = useContext(TBContext);
+  const store = use(TBContext);
   if (!store) throw new Error("Missing TBContext.Provider in the tree");
   const { browsingDate, emitCellPosition } = useStore(store, ({ browsingDate, emitCellPosition }) => ({
     browsingDate,

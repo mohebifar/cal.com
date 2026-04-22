@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
-import { useContext } from "react";
+import { use } from "react";
 
 import { InsightsOrgTeamsContext } from "../components/context/InsightsOrgTeamsProvider";
 
 export function useInsightsOrgTeams() {
-  const context = useContext(InsightsOrgTeamsContext);
+  const context = use(InsightsOrgTeamsContext);
   if (!context) {
     throw new Error("useInsightsOrgTeams must be used within a InsightsOrgTeamsProvider");
   }

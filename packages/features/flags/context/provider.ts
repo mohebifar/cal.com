@@ -1,4 +1,4 @@
-import { createContext, useContext, createElement } from "react";
+import { createContext, use, createElement } from "react";
 
 import type { AppFlags } from "../config";
 
@@ -21,7 +21,7 @@ const FeatureContext = createContext<Flags | null>(null);
  * this component.
  */
 export function useFlagMap() {
-  const flagMapContext = useContext(FeatureContext);
+  const flagMapContext = use(FeatureContext);
   if (flagMapContext === null) throw new Error("Error: useFlagMap was used outside of FeatureProvider.");
   return flagMapContext as Flags;
 }

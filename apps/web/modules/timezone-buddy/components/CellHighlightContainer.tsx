@@ -1,14 +1,14 @@
 "use client";
 
 import { LazyMotion, domAnimation, m } from "framer-motion";
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { use, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useStore } from "zustand";
 
 import { DAY_CELL_WIDTH } from "../constants";
 import { TBContext } from "../store";
 
 export function CellHighlightContainer({ children }: { children: React.ReactNode }) {
-  const store = useContext(TBContext);
+  const store = use(TBContext);
   if (!store) throw new Error("Missing TBContext.Provider in the tree");
 
   const [isAnimating, setIsAnimating] = useState(false);

@@ -2,7 +2,7 @@
 
 import type { SortingState, OnChangeFn, VisibilityState, ColumnSizingState } from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
-import { createContext, useContext, useRef, useMemo } from "react";
+import { createContext, use, useRef, useMemo } from "react";
 
 import { useElementByClassName } from "@calcom/lib/hooks/useElementByClassName";
 
@@ -62,7 +62,7 @@ export type DataTableStateContextType = {
 export const DataTableStateContext = createContext<DataTableStateContextType | null>(null);
 
 export function useDataTableState() {
-  const context = useContext(DataTableStateContext);
+  const context = use(DataTableStateContext);
   if (!context) {
     throw new Error("useDataTableState must be used within a DataTableStateProvider");
   }

@@ -1,5 +1,5 @@
 import type { ReactNode, Dispatch, SetStateAction } from "react";
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, use } from "react";
 
 import FreshChatScript from "./FreshChatScript";
 
@@ -11,7 +11,7 @@ interface FreshChatProviderProps {
   children: ReactNode;
 }
 
-export const useFreshChat = () => useContext(FreshChatContext);
+export const useFreshChat = () => use(FreshChatContext);
 
 export default function FreshChatProvider(props: FreshChatProviderProps) {
   const [active, setActive] = useState(false);

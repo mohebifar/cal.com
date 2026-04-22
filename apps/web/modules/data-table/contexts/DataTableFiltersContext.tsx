@@ -1,7 +1,7 @@
 "use client";
 
 import debounce from "lodash/debounce";
-import { createContext, useContext, useCallback, useMemo, useEffect } from "react";
+import { createContext, use, useCallback, useMemo, useEffect } from "react";
 
 import type { FilterValue, ActiveFilters } from "@calcom/features/data-table/lib/types";
 import { useDataTableSegment } from "./DataTableSegmentContext";
@@ -28,7 +28,7 @@ export type DataTableFiltersContextType = {
 export const DataTableFiltersContext = createContext<DataTableFiltersContextType | null>(null);
 
 export function useDataTableFilters() {
-  const context = useContext(DataTableFiltersContext);
+  const context = use(DataTableFiltersContext);
   if (!context) {
     throw new Error("useDataTableFilters must be used within a DataTableFiltersProvider");
   }

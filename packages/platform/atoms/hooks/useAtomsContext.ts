@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 
 import type { CalProviderLanguagesType, translationKeys } from "../cal-provider/languages";
 import type http from "../lib/http";
@@ -46,4 +46,4 @@ export const AtomsContext = createContext({
   isEmbed: false,
 } as IAtomsContext);
 
-export const useAtomsContext = () => useContext(AtomsContext);
+export const useAtomsContext = () => use(AtomsContext);

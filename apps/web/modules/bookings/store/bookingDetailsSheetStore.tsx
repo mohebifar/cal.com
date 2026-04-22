@@ -250,7 +250,7 @@ export function BookingDetailsSheetStoreProvider({
 }
 
 export function useBookingDetailsSheetStore<T>(selector: (state: BookingDetailsSheetStore) => T): T {
-  const store = React.useContext(BookingDetailsSheetStoreContext);
+  const store = React.use(BookingDetailsSheetStoreContext);
   if (!store) {
     throw new Error("useBookingDetailsSheetStore must be used within BookingDetailsSheetStoreProvider");
   }
@@ -259,7 +259,7 @@ export function useBookingDetailsSheetStore<T>(selector: (state: BookingDetailsS
 
 // For direct store access (needed for subscribe and getState)
 export function useBookingDetailsSheetStoreApi() {
-  const store = React.useContext(BookingDetailsSheetStoreContext);
+  const store = React.use(BookingDetailsSheetStoreContext);
   if (!store) {
     throw new Error("useBookingDetailsSheetStoreApi must be used within BookingDetailsSheetStoreProvider");
   }

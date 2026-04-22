@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 
 interface GeoContextValue {
   country: string;
@@ -13,7 +13,7 @@ export function GeoProvider({ country, children }: { country: string; children: 
 }
 
 export function useGeo() {
-  const context = useContext(GeoContext);
+  const context = use(GeoContext);
   if (context === undefined) {
     throw new Error("useGeo must be used within a GeoProvider");
   }

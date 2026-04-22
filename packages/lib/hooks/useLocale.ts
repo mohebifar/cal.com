@@ -1,6 +1,6 @@
 import { createInstance } from "i18next";
 import type { TFunction, i18n } from "i18next";
-import { useContext } from "react";
+import { use } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAtomsContext } from "@calcom/atoms/hooks/useAtomsContext";
@@ -32,8 +32,8 @@ const useClientLocale = (namespace: Parameters<typeof useTranslation>[0] = "comm
 const serverI18nInstances = new Map();
 
 export const useLocale = (): useLocaleReturnType => {
-  const appRouterContext = useContext(AppRouterI18nContext);
-  const customI18nContext = useContext(CustomI18nContext);
+  const appRouterContext = use(AppRouterI18nContext);
+  const customI18nContext = use(CustomI18nContext);
   const clientI18n = useClientLocale();
 
   if (appRouterContext) {
