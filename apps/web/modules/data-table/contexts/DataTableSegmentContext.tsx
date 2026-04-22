@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useEffect, useRef, useMemo } from "react";
+import { createContext, use, useState, useCallback, useEffect, useRef, useMemo } from "react";
 
 import { useSegmentsNoop } from "../hooks/useSegmentsNoop";
 import type {
@@ -27,7 +27,7 @@ export type DataTableSegmentContextType = {
 export const DataTableSegmentContext = createContext<DataTableSegmentContextType | null>(null);
 
 export function useDataTableSegment() {
-  const context = useContext(DataTableSegmentContext);
+  const context = use(DataTableSegmentContext);
   if (!context) {
     throw new Error("useDataTableSegment must be used within a DataTableSegmentProvider");
   }

@@ -162,7 +162,7 @@ function ComboboxPopup({
   side?: ComboboxPrimitive.Positioner.Props["side"];
   anchor?: ComboboxPrimitive.Positioner.Props["anchor"];
 }) {
-  const { chipsRef } = React.useContext(ComboboxContext);
+  const { chipsRef } = React.use(ComboboxContext);
   const anchor = anchorProp ?? chipsRef;
 
   return (
@@ -350,7 +350,7 @@ function ComboboxChips({
 }: ComboboxPrimitive.Chips.Props & {
   startAddon?: React.ReactNode;
 }) {
-  const { chipsRef } = React.useContext(ComboboxContext);
+  const { chipsRef } = React.use(ComboboxContext);
 
   return (
     <ComboboxPrimitive.Chips

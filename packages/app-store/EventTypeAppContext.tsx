@@ -35,7 +35,7 @@ export const useAppContextWithSchema = <TAppData extends ZodType>() => {
   type GetAppData = GetAppDataGeneric<TAppData>;
   type SetAppData = SetAppDataGeneric<TAppData>;
   // TODO: Not able to do it without type assertion here
-  const context = React.useContext(EventTypeAppContext) as {
+  const context = React.use(EventTypeAppContext) as {
     getAppData: GetAppData;
     setAppData: SetAppData;
     LockedIcon: LockedIcon;

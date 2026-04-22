@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useRef, type ReactNode, useEffect } from "react";
+import { createContext, use, useRef, type ReactNode, useEffect } from "react";
 import { useStore } from "zustand";
 import type { StoreApi } from "zustand";
 
@@ -25,7 +25,7 @@ export const useBookerStoreContext = <T,>(
   selector: (store: BookerStore) => T,
   equalityFn?: (a: T, b: T) => boolean
 ): T => {
-  const bookerStoreContext = useContext(BookerStoreContext);
+  const bookerStoreContext = use(BookerStoreContext);
 
   if (!bookerStoreContext) {
     throw new Error("useBookerStoreContext must be used within BookerStoreProvider");
@@ -56,7 +56,7 @@ export const useInitializeBookerStoreContext = ({
   isPlatform = false,
   allowUpdatingUrlParams = true,
 }: StoreInitializeType) => {
-  const bookerStoreContext = useContext(BookerStoreContext);
+  const bookerStoreContext = use(BookerStoreContext);
 
   if (!bookerStoreContext) {
     throw new Error("useInitializeBookerStoreContext must be used within BookerStoreProvider");

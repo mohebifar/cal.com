@@ -1,5 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import { createContext, useContext, useState, useMemo, type PropsWithChildren } from "react";
+import { createContext, use, useState, useMemo, type PropsWithChildren } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 import { type ColumnFilter } from "@calcom/features/data-table";
@@ -68,7 +68,7 @@ function AttributesProvider({ children }: PropsWithChildren) {
 }
 
 function useAttributes() {
-  const context = useContext(AttributesContext);
+  const context = use(AttributesContext);
   if (!context) {
     throw new Error("useAttributes must be used within an AttributesProvider");
   }

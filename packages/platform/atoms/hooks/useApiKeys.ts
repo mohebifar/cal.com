@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 
 export const ApiKeyContext = createContext({ key: "", error: "" });
 
-export const useApiKey = () => useContext(ApiKeyContext);
+export const useApiKey = () => use(ApiKeyContext);

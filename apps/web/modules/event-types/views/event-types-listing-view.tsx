@@ -57,7 +57,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import type { FC } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, use, useEffect, useState } from "react";
 import { z } from "zod";
 
 type GetUserEventGroupsResponse = RouterOutputs["viewer"]["eventTypes"]["getUserEventGroups"];
@@ -84,7 +84,7 @@ const SearchContextInternal: React.Context<SearchContextType | undefined> = crea
 >(undefined);
 
 const useSearchContext = (): SearchContextType => {
-  const context = useContext(SearchContextInternal);
+  const context = use(SearchContextInternal);
   if (!context) {
     throw new Error("useSearchContext must be used within SearchProvider");
   }

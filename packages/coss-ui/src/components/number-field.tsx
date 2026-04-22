@@ -110,7 +110,7 @@ function NumberFieldScrubArea({
 }: NumberFieldPrimitive.ScrubArea.Props & {
   label: string;
 }) {
-  const context = React.useContext(NumberFieldContext);
+  const context = React.use(NumberFieldContext);
 
   if (!context) {
     throw new Error(

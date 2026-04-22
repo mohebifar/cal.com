@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import React, { useState } from "react";
 
 import type { EmbedState } from "../../types";
@@ -20,7 +20,7 @@ export function EmbedDialogProvider({ children }: { children: React.ReactNode })
 }
 
 export function useEmbedDialogCtx(noQueryParamMode: boolean) {
-  const context = useContext(EmbedDialogContext);
+  const context = use(EmbedDialogContext);
   if (noQueryParamMode) {
     if (!context) {
       throw new Error("useEmbedDialogCtx must be used within an EmbedDialogProvider");

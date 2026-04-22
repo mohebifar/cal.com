@@ -1,4 +1,4 @@
-import { createContext, useContext, createElement } from "react";
+import { createContext, use, createElement } from "react";
 import type z from "zod";
 
 import type { MembershipRole } from "@calcom/prisma/enums";
@@ -41,7 +41,7 @@ const OrganizationBrandingContext = createContext<{ orgBrand: OrganizationBrandi
  * @returns `undefined` when data isn't available yet, `null` when there's an error, and the data(which can be `null`) when it's available
  */
 export function useOrgBranding() {
-  const orgBrandingContext = useContext(OrganizationBrandingContext);
+  const orgBrandingContext = use(OrganizationBrandingContext);
   if (!orgBrandingContext) throw new Error("Error: useOrgBranding was used outside of OrgBrandingProvider.");
   return orgBrandingContext.orgBrand;
 }

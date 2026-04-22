@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import { createStore, useStore } from "zustand";
 
 export interface EventPermissions {
@@ -70,7 +70,7 @@ export const EventPermissionProvider = ({ children, initialPermissions }: EventP
 };
 
 export const useEventPermissionStore = <T,>(selector: (store: EventPermissionStore) => T): T => {
-  const eventPermissionStoreContext = useContext(EventPermissionContext);
+  const eventPermissionStoreContext = use(EventPermissionContext);
 
   if (!eventPermissionStoreContext) {
     throw new Error("useEventPermissionStore must be used within EventPermissionProvider");

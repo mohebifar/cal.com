@@ -22,7 +22,7 @@ import { BookerLayouts } from "@calcom/prisma/zod-utils";
 import { Booker as BookerComponent } from "@calcom/web/modules/bookings/components/Booker";
 import { useQueryClient } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, use, useEffect, useMemo, useRef, useState } from "react";
 import { shallow } from "zustand/shallow";
 import { useCreateBooking } from "../hooks/bookings/useCreateBooking";
 import { useCreateInstantBooking } from "../hooks/bookings/useCreateInstantBooking";
@@ -94,7 +94,7 @@ const BookerPlatformWrapperComponent = (
     Boolean(localStorage?.getItem?.("overlayCalendarSwitchDefault"))
   );
   const prevStateRef = useRef<BookerStoreValues | null>(null);
-  const bookerStoreContext = useContext(BookerStoreContext);
+  const bookerStoreContext = use(BookerStoreContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getStateValues = useCallback((state: any): BookerStoreValues => {
     return Object.fromEntries(
